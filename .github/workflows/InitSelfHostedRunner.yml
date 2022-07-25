@@ -10,8 +10,8 @@ jobs:
           run: |
             terraform init
           env:
-            AWS_ACCESS_KEY_ID:  ${ secrets.AWS_ACCESS_KEY_ID }
-            AWS_SECRET_ACCESS_KEY:  ${ secrets.AWS_SECRET_ACCESS_KEY }
+            AWS_ACCESS_KEY_ID:  ${ secrets.AWS_ACCESS_KEY }
+            AWS_SECRET_ACCESS_KEY:  ${ secrets.AWS_SECRET_KEY }
         
         - name: Terraform validate
           run: |
@@ -20,5 +20,5 @@ jobs:
           run: |
             terraform apply -auto-approve -var 'personal_access_token=${ secrets.PERSONAL_ACCESS_TOKEN }'
           env:
-            AWS_ACCESS_KEY_ID:  ${ secrets.AWS_ACCESS_KEY_ID }
-            AWS_SECRET_ACCESS_KEY:  ${ secrets.AWS_SECRET_ACCESS_KEY }
+            AWS_ACCESS_KEY_ID:  ${ secrets.AWS_ACCESS_KEY }
+            AWS_SECRET_ACCESS_KEY:  ${ secrets.AWS_SECRET_KEY }
