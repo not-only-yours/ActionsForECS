@@ -23,5 +23,5 @@ jobs:
             ECR_REPOSITORY: not-only-yoursactionsforecs
             IMAGE_TAG: ${{ github.head_ref }}.${{ github.sha }}
           run: |
-              run: docker build -t project:$IMAGE_TAG
+              run: docker build -t $ECR_REGISTRY:$IMAGE_TAG .
               docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
