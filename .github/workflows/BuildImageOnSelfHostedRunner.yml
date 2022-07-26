@@ -25,6 +25,7 @@ jobs:
           run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
           
         - name: Build, tag, and push image to Amazon ECR
+          id: build-image
           env:
             ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
             ECR_REPOSITORY: not-only-yoursactionsforecs
