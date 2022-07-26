@@ -31,3 +31,7 @@ jobs:
           run: |
               docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$SHORT_SHA .
               docker push $ECR_REGISTRY/$ECR_REPOSITORY:$SHORT_SHA
+        
+        - name: Download task def
+          run: |
+            aws ecs describe-task-definition --task-definition ecs-fargate-example --query taskDefinition > task-definition.json
