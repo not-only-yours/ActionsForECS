@@ -25,7 +25,7 @@ jobs:
           env:
             ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
             ECR_REPOSITORY: not-only-yoursactionsforecs
-            IMAGE_TAG: latest
+            IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
           run: |
               docker build -t $ECR_REGISTRY:$IMAGE_TAG .
               docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
