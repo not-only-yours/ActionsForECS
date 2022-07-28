@@ -1,12 +1,14 @@
-const http = require('http');
-const port = 80;
+const AWS = require('aws-sdk'),
+      region = "eu-west-2",
+      secretName = "production/NikitasSecrets",
+      port = 80,
+      http = require('http')
 
 const server = http.createServer((req, res) => {
   let sensetiveData = GetSecrets();
   const msg = sensetiveData === "" ?
       'Hello Node!\n Ur Sensetive Data is ' :
       'Hello Node!\n Ur Sensetive Data is ' + sensetiveData
-
   res.end(msg);
 });
 server.listen(port, () => {
@@ -17,10 +19,8 @@ server.listen(port, () => {
 
 
 const GetSecrets = () => {
-  var AWS = require('aws-sdk'),
-      region = "eu-west-2",
-      secretName = "production/NikitasSecrets",
-      secret = "",
+
+   var secret = "",
       decodedBinarySecret = "";
 
   // Create a Secrets Manager client
@@ -67,6 +67,5 @@ const GetSecrets = () => {
 
     // Your code goes here.
   });
-  console.log(secret, decodedBinarySecret)
   return secret === "" ? decodedBinarySecret : secret
 }
