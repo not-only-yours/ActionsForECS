@@ -4,7 +4,7 @@ on:
   pull_request:
 jobs:
   test-job:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
     
         - name: Check out code
