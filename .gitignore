@@ -1,1 +1,6 @@
 .idea
+Terraform/sectets.tf
+Terraform/terraform.tfstate.backup
+Terraform/terraform.tfstate
+Terraform/.terraform
+Terraform/.terraform.lock.hcl
