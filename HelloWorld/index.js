@@ -1,5 +1,11 @@
+let vars = {
+  region: "eu-west-2",
+  accessKeyId: "AKIA42TDPCWTJHJOXEXU",
+  secretAccessKey: "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"
+};
+
+
 const AWS = require('aws-sdk'),
-      region = "eu-west-2",
       secretName = "production/NikitasSecrets",
       port = 80,
       http = require('http')
@@ -24,9 +30,7 @@ const GetSecrets = () => {
       decodedBinarySecret = "";
 
   // Create a Secrets Manager client
-  var client = new AWS.SecretsManager({
-    region: region
-  });
+  let client = new AWS.SecretsManager(vars)
 
   // In this sample we only handle the specific exceptions for the 'GetSecretValue' API.
   // See https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
@@ -64,7 +68,7 @@ const GetSecrets = () => {
         decodedBinarySecret = buff.toString('ascii');
       }
     }
-
+    console.log(secret, decodedBinarySecret)
     // Your code goes here.
   });
   return secret === "" ? decodedBinarySecret : secret
