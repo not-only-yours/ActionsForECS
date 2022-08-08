@@ -1,29 +1,10 @@
-resource "aws_ecs_cluster" "frontend-cluster" {
-  name = "ecs-spot-frontend"
-  setting {
-    name  = "containerInsights"
-    value = "disabled"
-  }
-}
-
-resource "aws_ecs_cluster_capacity_providers" "frontend-cluster" {
-  cluster_name = aws_ecs_cluster.frontend-cluster.name
-
-  capacity_providers = ["FARGATE_SPOT", "FARGATE"]
-
-  default_capacity_provider_strategy {
-    capacity_provider = "FARGATE_SPOT"
-  }
-}
-
-
 module "fargate-frontend" {
   source = "umotif-public/ecs-fargate/aws"
 
   name_prefix        = "ecs-fargate-frontend"
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
-  cluster_id         = aws_ecs_cluster.frontend-cluster.id
+  cluster_id         = aws_ecs_cluster.cluster.id
 
   platform_version = "1.4.0"
 
@@ -84,7 +65,7 @@ module "fargate-frontend" {
 resource "aws_appautoscaling_target" "ecs-target-frontend" {
   max_capacity       = 4
   min_capacity       = 1
-  resource_id        = "service/${aws_ecs_cluster.frontend-cluster.name}/${module.fargate-frontend.service_name}"
+  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${module.fargate-frontend.service_name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 }
@@ -101,7 +82,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-utilization-high-frontend" {
   threshold           = var.ecs_as_cpu_high_threshold_per
 
   dimensions = {
-    ClusterName = aws_ecs_cluster.frontend-cluster.name
+    ClusterName = aws_ecs_cluster.cluster.name
     ServiceName = module.fargate-frontend.service_name
   }
 
@@ -119,7 +100,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-utilization-low-frontend" {
   threshold           = var.ecs_as_cpu_low_threshold_per
 
   dimensions = {
-    ClusterName = aws_ecs_cluster.frontend-cluster.name
+    ClusterName = aws_ecs_cluster.cluster.name
     ServiceName = module.fargate-frontend.service_name
   }
 

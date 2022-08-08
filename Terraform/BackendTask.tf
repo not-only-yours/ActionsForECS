@@ -1,29 +1,10 @@
-resource "aws_ecs_cluster" "backend-cluster" {
-  name = "ecs-spot-backend"
-  setting {
-    name  = "containerInsights"
-    value = "disabled"
-  }
-}
-
-resource "aws_ecs_cluster_capacity_providers" "backend-cluster" {
-  cluster_name = aws_ecs_cluster.backend-cluster.name
-
-  capacity_providers = ["FARGATE_SPOT", "FARGATE"]
-
-  default_capacity_provider_strategy {
-    capacity_provider = "FARGATE_SPOT"
-  }
-}
-
-
 module "fargate-backend" {
   source = "umotif-public/ecs-fargate/aws"
 
   name_prefix        = "ecs-fargate-backend"
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
-  cluster_id         = aws_ecs_cluster.backend-cluster.id
+  cluster_id         = aws_ecs_cluster.cluster
 
   platform_version = "1.4.0"
 
