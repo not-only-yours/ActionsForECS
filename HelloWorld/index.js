@@ -1,7 +1,5 @@
 let vars = {
-  region: "eu-west-2",
-  accessKeyId: "AKIA42TDPCWTJHJOXEXU",
-  secretAccessKey: "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"
+  region: "eu-west-2"
 };
 
 
