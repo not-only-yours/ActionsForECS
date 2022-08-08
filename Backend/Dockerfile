@@ -2,9 +2,9 @@ FROM node:16.13.1-alpine
 
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
+COPY . ./
 RUN npm install
 
+EXPOSE 3000
 
-EXPOSE 80
-COPY . ./
 CMD ["node", "index.js"]
