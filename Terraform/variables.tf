@@ -11,6 +11,18 @@ variable "PRIVATE_SUBNET" {
 
 }
 
+variable "ELASTICCACHE_SUBNET" {
+  default = ["10.0.4.0/24" ]
+  description = "Amazon PRIVATE_SUBNETS"
+
+}
+
+variable "ELASTICCACHE_PORT" {
+  default = 6739
+  description = "Amazon PRIVATE_SUBNETS"
+
+}
+
 variable "AZS" {
   default = ["eu-west-2a", "eu-west-2b"]
   description = "Amazon azs"
@@ -52,4 +64,8 @@ variable "ecs_as_cpu_low_threshold_per" {
 
 variable "ecs_as_cpu_high_threshold_per" {
   default = "90"
+}
+
+variable "ALL_CIDR_BLOCKS" {
+  default = ["0.0.0.0/0"]
 }

@@ -1,30 +1,31 @@
-#resource "aws_security_group" "redis" {
-#  name = "redis"
-#  ingress {
-#    from_port = "6739"
-#    to_port = "6739"
-#    protocol = "tcp"
-#    security_groups = ["redis"]
-#  }
+resource "aws_security_group" "redis" {
+  vpc_id = module.vpc.vpc_id
+  ingress {
+    from_port = var.ELASTICCACHE_PORT
+    to_port = var.ELASTICCACHE_PORT
+    protocol = "tcp"
+    cidr_blocks = var.ALL_CIDR_BLOCKS
+  }
 
-#  egress {
-#    from_port   = 0
-#    to_port     = 0
-#   protocol    = "-1"
-#    cidr_blocks = ["0.0.0.0/0"]
-#  }
-#}
+  egress {
+    from_port   = 0
+    to_port     = 0
+   protocol    = "-1"
+    cidr_blocks = var.ALL_CIDR_BLOCKS
+  }
+}
 
 
 resource "aws_elasticache_cluster" "enabled" {
-  cluster_id           = "redis-cluster"
+
+  cluster_id           = "aws-ecs-cluster"
   engine               = "redis"
   node_type            = "cache.t2.micro"
   num_cache_nodes      = 1
   parameter_group_name = "default.redis6.x"
-  port                 = 6379
-  #security_group_ids   = var.security_group_ids
-  #subnet_group_name    = aws_elasticache_subnet_group.redis-subnets.name
+  port                 = var.ELASTICCACHE_SUBNET
+  security_group_ids   = [aws_security_group.redis.id]
+  subnet_group_name    = module.vpc.elasticache_subnet_group_name
 }
 
 #resource "aws_elasticache_user" "test" {

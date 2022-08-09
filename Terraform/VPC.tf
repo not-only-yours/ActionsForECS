@@ -7,6 +7,7 @@ module "vpc" {
   azs             = var.AZS
   public_subnets  = var.PUBLIC_SUBNET
   private_subnets = var.PRIVATE_SUBNET
+  elasticache_subnets = var.ELASTICCACHE_SUBNET
 
   #One NAT Gateway per availability zone
   enable_nat_gateway = true

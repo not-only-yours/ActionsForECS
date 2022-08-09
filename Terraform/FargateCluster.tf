@@ -1,5 +1,5 @@
 resource "aws_ecs_cluster" "cluster" {
-  name = "ecs-spot-frontend"
+  name = "ecs"
   setting {
     name  = "containerInsights"
     value = "disabled"

@@ -4,7 +4,7 @@ module "fargate-backend" {
   name_prefix        = "ecs-fargate-backend"
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
-  cluster_id         = aws_ecs_cluster.cluster
+  cluster_id         = aws_ecs_cluster.cluster.id
 
   platform_version = "1.4.0"
 
