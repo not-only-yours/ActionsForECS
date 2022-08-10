@@ -61,7 +61,7 @@ router.get('/',async function (req, res) {
 });
 
 router2.get('/',async function (req, res) {
-    console.log("raz")
+    console.log(secretManagerCredentials)
 
 
     res.json({'message': "frontend ok", "creds": secretManagerCredentials.VALUE});
