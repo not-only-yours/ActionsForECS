@@ -133,6 +133,7 @@ app.use('/testDatabase', router4);
 
 app.listen(PORT,function(){
     console.log('Server is running at PORT:',PORT);
+    console.log(secretManagerCredentials.VALUE)
 });
 
 
