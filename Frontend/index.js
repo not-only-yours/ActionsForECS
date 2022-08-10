@@ -39,7 +39,7 @@ router.get('/',async function (req, res) {
     // });
 
     var options = {
-        host: secretManagerCredentials.VALUE.BACKEND_BALANCER_DNS_NAME,
+        host: JSON.parse(secretManagerCredentials.VALUE).BACKEND_BALANCER_DNS_NAME,
         port: 3000,
         path: '/testBackend'
 
@@ -76,7 +76,7 @@ router3.get('/',async function (req, res) {
     // });
 
     var options = {
-        host: secretManagerCredentials.VALUE.BACKEND_BALANCER_DNS_NAME,
+        host: JSON.parse(secretManagerCredentials.VALUE).BACKEND_BALANCER_DNS_NAME,
         port: 3000,
         path: '/testRedis'
 
@@ -105,7 +105,7 @@ router4.get('/',async function (req, res) {
     // });
 
     var options = {
-        host: secretManagerCredentials.VALUE[DNS_TYPES.BACKEND_BALANCER],
+        host: JSON.parse(secretManagerCredentials.VALUE).BACKEND_BALANCER_DNS_NAME,
         port: 3000,
         path: '/testDatabase'
 
@@ -133,7 +133,7 @@ app.use('/testDatabase', router4);
 
 app.listen(PORT,function(){
     console.log('Server is running at PORT:',PORT);
-    console.log(secretManagerCredentials.VALUE)
+    console.log(JSON.parse(secretManagerCredentials.VALUE).BACKEND_BALANCER_DNS_NAME)
 });
 
 
