@@ -39,7 +39,7 @@ router.get('/',async function (req, res) {
     // });
 
     var options = {
-        host: secretManagerCredentials.VALUE[],
+        host: secretManagerCredentials.VALUE.BACKEND_BALANCER_DNS_NAME,
         port: 3000,
         path: '/testBackend'
 
