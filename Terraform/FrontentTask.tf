@@ -16,6 +16,13 @@ module "fargate-frontend" {
 
   platform_version = "1.4.0"
 
+  task_container_secrets = [
+    {
+      "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/TwoWeeksTask-bL8wXn",
+      "name": "production/TwoWeeksTask"
+    }
+  ]
+
 
   task_container_image   = var.FRONTEND_CONTAINER_IMAGE
   task_definition_cpu    = 256
@@ -23,13 +30,8 @@ module "fargate-frontend" {
 
   task_container_port             = 80
   task_container_assign_public_ip = true
-  
-  task_container_secrets = [
-      {
-        name      = "aws/secretsmanager"
-        valueFrom = "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/TwoWeeksTask-bL8wXn"
-      }
-    ]
+
+
 
   target_groups = [
     {
