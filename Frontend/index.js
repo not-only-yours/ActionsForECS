@@ -1,7 +1,8 @@
 //import {AWS} from "aws-sdk";
 
 let secretManagerCredentials = {
-    SECRET_NAME: "production/TwoWeeksTask"
+    SECRET_NAME: "production/TwoWeeksTask",
+    VALUE: process.env.SECRET_NAME
 }
 
 let DNS_TYPES = {
@@ -13,8 +14,8 @@ let DNS_TYPES = {
 
 let variable = {
     region: "eu-west-2",
-    // accessKeyId: "",
-    // secretAccessKey: ""
+    //accessKeyId: "",
+    //secretAccessKey: ""
 };
 
 const express = require("express");
@@ -38,7 +39,7 @@ router.get('/',async function (req, res) {
     // });
 
     var options = {
-        host: await GetSecrets(secretManagerCredentials.SECRET_NAME, DNS_TYPES.BACKEND_BALANCER),
+        host: secretManagerCredentials.VALUE[DNS_TYPES.BACKEND_BALANCER],
         port: 3000,
         path: '/testBackend'
 
@@ -63,7 +64,7 @@ router2.get('/',async function (req, res) {
     console.log("raz")
 
 
-    res.json({'message': "frontend ok", "creds": await GetSecrets(secretManagerCredentials.SECRET_NAME, DNS_TYPES.BACKEND_BALANCER)});
+    res.json({'message': "frontend ok", "creds": secretManagerCredentials.VALUE});
 });
 
 
@@ -75,7 +76,7 @@ router3.get('/',async function (req, res) {
     // });
 
     var options = {
-        host: await GetSecrets(secretManagerCredentials.SECRET_NAME, DNS_TYPES.BACKEND_BALANCER),
+        host: secretManagerCredentials.VALUE[DNS_TYPES.BACKEND_BALANCER],
         port: 3000,
         path: '/testRedis'
 
@@ -104,7 +105,7 @@ router4.get('/',async function (req, res) {
     // });
 
     var options = {
-        host: await GetSecrets(secretManagerCredentials.SECRET_NAME, DNS_TYPES.BACKEND_BALANCER),
+        host: secretManagerCredentials.VALUE[DNS_TYPES.BACKEND_BALANCER],
         port: 3000,
         path: '/testDatabase'
 

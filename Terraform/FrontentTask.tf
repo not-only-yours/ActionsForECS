@@ -1,3 +1,11 @@
+#"secrets": [
+#                     {
+#                        "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:stage/app10/polar-wi7Dow",
+#                        "name": "stage/app10/polar"
+#                     }
+#                  ],
+
+#
 module "fargate-frontend" {
   source = "umotif-public/ecs-fargate/aws"
 
@@ -7,6 +15,14 @@ module "fargate-frontend" {
   cluster_id         = aws_ecs_cluster.cluster.id
 
   platform_version = "1.4.0"
+
+  task_container_secrets = [
+                         {
+                            "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/TwoWeeksTask-bL8wXn",
+                            "name": "production/TwoWeeksTask"
+                         }
+                      ]
+
 
   task_container_image   = var.FRONTEND_CONTAINER_IMAGE
   task_definition_cpu    = 256
@@ -142,3 +158,5 @@ resource "aws_appautoscaling_policy" "app-down-frontend" {
     }
   }
 }
+
+

@@ -4,3 +4,7 @@ Terraform/terraform.tfstate.backup
 Terraform/terraform.tfstate
 Terraform/.terraform
 Terraform/.terraform.lock.hcl
+Frontend/node_modules
+Backend/node_modules
+Frontend/package-lock.json
+Backend/package-lock.json
