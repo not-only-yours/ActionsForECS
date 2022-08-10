@@ -30,6 +30,13 @@ module "fargate-frontend" {
 
   task_container_port             = 80
   task_container_assign_public_ip = true
+  
+  task_container_secrets = [
+      {
+        name      = "aws/secretsmanager"
+        valueFrom = "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/TwoWeeksTask-bL8wXn"
+      }
+    ]
 
   target_groups = [
     {
