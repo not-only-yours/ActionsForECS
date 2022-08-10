@@ -13,13 +13,20 @@ resource "aws_lb_listener" "frontend-alb_80" {
   load_balancer_arn = module.frontend-alb.arn
   port              = "80"
   protocol          = "HTTP"
+  #target_group_arn = module.fargate-frontend.target_group_arn[0]
 
   default_action {
-    type             = "forward"
-    target_group_arn = module.fargate-frontend.target_group_arn[0]
+      type = "redirect"
+
+      redirect {
+        port        = "443"
+        protocol    = "HTTPS"
+        status_code = "HTTP_301"
+
+      }
   }
 }
-    
+
 resource "aws_lb_listener" "frontend-alb_443" {
   load_balancer_arn = module.frontend-alb.arn
   port              = "443"
@@ -31,4 +38,4 @@ resource "aws_lb_listener" "frontend-alb_443" {
     type             = "forward"
     target_group_arn = module.fargate-frontend.target_group_arn[0]
   }
-}    
+}
