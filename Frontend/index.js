@@ -2,7 +2,7 @@
 
 let secretManagerCredentials = {
     SECRET_NAME: "production/TwoWeeksTask",
-    VALUE: process.env[SECRET_NAME]
+    VALUE: process.env["production/TwoWeeksTask"]
 }
 
 let DNS_TYPES = {
