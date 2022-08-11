@@ -1,7 +1,8 @@
 //import {AWS} from "aws-sdk";
 
 let secretManagerCredentials = {
-    SECRET_NAME: "production/TwoWeeksTask"
+    SECRET_NAME: "production/TwoWeeksTask",
+    VALUE: process.env["production/TwoWeeksTask"]
 }
 
 let DNS_TYPES = {
@@ -35,17 +36,17 @@ router.get('/',async function (req, res) {
 });
 
 router2.get('/',async function (req, res) {
-    console.log("dva")
+    console.log("testRedis")
 
 
-    res.json({'message': await GetSecrets(secretManagerCredentials.SECRET_NAME, DNS_TYPES.REDIS)});
+    res.json({'message': JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME});
 });
 
 router3.get('/',async function (req, res) {
-    console.log("tri")
+    console.log("testDatabase")
 
 
-    res.json({'message': await GetSecrets(secretManagerCredentials.SECRET_NAME, DNS_TYPES.DATABASE)});
+    res.json({'message': JSON.parse(secretManagerCredentials.VALUE).DATABASE_DNS_NAME});
 });
 
 // router.get('/testDatabase',async function (req, res) {
@@ -62,26 +63,26 @@ app.listen(PORT,function(){
 
 
 
-const GetSecrets = (secretName, typeOfDNS) => {
-    var secret,
-        decodedBinarySecret,
-        client = new AWS.SecretsManager(variable)
-
-    return new Promise((resolve, reject) => {
-        client.getSecretValue({SecretId: secretName}, function (err, data) {
-            if ('SecretString' in data) {
-                secret = JSON.parse(data.SecretString);
-            } else {
-                let buff = new Buffer(data.SecretBinary, 'base64');
-                decodedBinarySecret = JSON.parse(buff.toString('ascii'));
-            }
-            //console.log(toString(typeof decodedBinarySecret) === "undefined" ? decodedBinarySecret.SecretName: secret.SecretName)
-
-            resolve(  toString(typeof decodedBinarySecret) === "undefined" ? decodedBinarySecret[typeOfDNS] : secret[typeOfDNS])
-        });
-    })
-
-
-
-}
+// const GetSecrets = (secretName, typeOfDNS) => {
+//     var secret,
+//         decodedBinarySecret,
+//         client = new AWS.SecretsManager(variable)
+//
+//     return new Promise((resolve, reject) => {
+//         client.getSecretValue({SecretId: secretName}, function (err, data) {
+//             if ('SecretString' in data) {
+//                 secret = JSON.parse(data.SecretString);
+//             } else {
+//                 let buff = new Buffer(data.SecretBinary, 'base64');
+//                 decodedBinarySecret = JSON.parse(buff.toString('ascii'));
+//             }
+//             //console.log(toString(typeof decodedBinarySecret) === "undefined" ? decodedBinarySecret.SecretName: secret.SecretName)
+//
+//             resolve(  toString(typeof decodedBinarySecret) === "undefined" ? decodedBinarySecret[typeOfDNS] : secret[typeOfDNS])
+//         });
+//     })
+//
+//
+//
+// }
 
