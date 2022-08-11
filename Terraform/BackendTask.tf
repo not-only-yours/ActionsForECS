@@ -64,7 +64,7 @@ module "fargate-backend" {
   #  ]
 
   depends_on = [
-    module.backend-alb
+    aws_lb.backend
   ]
 }
 
