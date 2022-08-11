@@ -8,12 +8,19 @@ module "fargate-backend" {
 
   platform_version = "1.4.0"
 
+  task_container_secrets = [
+    {
+      "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/TwoWeeksTask-bL8wXn",
+      "name": "production/TwoWeeksTask"
+    }
+  ]
+
   task_container_image   = var.BACKEND_CONTAINER_IMAGE
   task_definition_cpu    = 256
   task_definition_memory = 512
 
   task_container_port             = 3000
-  task_container_assign_public_ip = true
+  task_container_assign_public_ip = false
 
   target_groups = [
     {
@@ -24,7 +31,7 @@ module "fargate-backend" {
 
   health_check = {
     port = "traffic-port"
-    path = "/"
+    path = "/testbackend"
   }
 
   capacity_provider_strategy = [

@@ -14,6 +14,7 @@ module "fargate-frontend" {
   private_subnet_ids = module.vpc.private_subnets
   cluster_id         = aws_ecs_cluster.cluster.id
 
+
   platform_version = "1.4.0"
 
   task_container_secrets = [
@@ -29,7 +30,7 @@ module "fargate-frontend" {
   task_definition_memory = 512
 
   task_container_port             = 80
-  task_container_assign_public_ip = true
+  task_container_assign_public_ip = false
 
 
 
@@ -42,7 +43,7 @@ module "fargate-frontend" {
 
   health_check = {
     port = "traffic-port"
-    path = "/"
+    path = "/testfrontend"
   }
 
   capacity_provider_strategy = [

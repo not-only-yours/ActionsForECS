@@ -9,7 +9,7 @@ module "backend-alb" {
   subnets            = module.vpc.private_subnets
 }
 
-resource "aws_lb_listener" "backend-alb-80" {
+resource "aws_lb_listener" "backend-alb-3000" {
   load_balancer_arn = module.backend-alb.arn
   port              = "3000"
   protocol          = "HTTP"

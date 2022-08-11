@@ -42,12 +42,12 @@ variable "ENV" {
 
 
 variable "FRONTEND_CONTAINER_IMAGE" {
-  default = "881750644134.dkr.ecr.eu-west-2.amazonaws.com/not-only-yoursactionsforecs-frontend:5c118ebe"
+  default = "881750644134.dkr.ecr.eu-west-2.amazonaws.com/not-only-yoursactionsforecs-frontend:46427594"
   description = "Arn to container"
 }
 
 variable "BACKEND_CONTAINER_IMAGE" {
-  default = "881750644134.dkr.ecr.eu-west-2.amazonaws.com/not-only-yoursactionsforecs-backend:547e64f3"
+  default = "881750644134.dkr.ecr.eu-west-2.amazonaws.com/not-only-yoursactionsforecs-backend:731db74d"
   description = "Arn to container"
 }
 

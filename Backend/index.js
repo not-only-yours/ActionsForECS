@@ -1,22 +1,12 @@
-//import {AWS} from "aws-sdk";
-
 let secretManagerCredentials = {
     SECRET_NAME: "production/TwoWeeksTask",
     VALUE: process.env["production/TwoWeeksTask"]
 }
 
-let DNS_TYPES = {
-    REDIS: "REDIS_DNS_NAME",
-    DATABASE:"DATABASE_DNS_NAME",
-    BACKEND_BALANCER: "BACKEND_BALANCER_DNS_NAME"
+let secretManagerRDS = {
+    SECRET_NAME: "production/RDS",
+    VALUE: process.env["production/RDS"]
 }
-
-
-let variable = {
-    region: "eu-west-2",
-    // accessKeyId: "",
-    // secretAccessKey: ""
-};
 
 const express = require("express");
 const app = express();
@@ -45,13 +35,21 @@ router2.get('/',async function (req, res) {
 router3.get('/',async function (req, res) {
     console.log("testDatabase")
 
+    var mysql = require('mysql');
 
-    res.json({'message': JSON.parse(secretManagerCredentials.VALUE).DATABASE_DNS_NAME});
+    var connection = mysql.createConnection(JSON.parse(secretManagerRDS.VALUE));
+
+    connection.connect(function(err) {
+      if (err) {
+        console.error('Database connection failed: ' + err.stack);
+        return;
+      }
+      res.json({'message': "Connected to database."});
+    });
+
+    connection.end();
 });
 
-// router.get('/testDatabase',async function (req, res) {
-//     res.json({'message': await GetSecrets(secretManagerCredentials.SECRET_NAME, DNS_TYPES.DATABASE)});
-// });
 app.use('/testBackend', router);
 app.use('/testRedis', router2);
 app.use('/testDatabase', router3);
@@ -61,28 +59,4 @@ app.listen(PORT,function(){
 });
 
 
-
-
-// const GetSecrets = (secretName, typeOfDNS) => {
-//     var secret,
-//         decodedBinarySecret,
-//         client = new AWS.SecretsManager(variable)
-//
-//     return new Promise((resolve, reject) => {
-//         client.getSecretValue({SecretId: secretName}, function (err, data) {
-//             if ('SecretString' in data) {
-//                 secret = JSON.parse(data.SecretString);
-//             } else {
-//                 let buff = new Buffer(data.SecretBinary, 'base64');
-//                 decodedBinarySecret = JSON.parse(buff.toString('ascii'));
-//             }
-//             //console.log(toString(typeof decodedBinarySecret) === "undefined" ? decodedBinarySecret.SecretName: secret.SecretName)
-//
-//             resolve(  toString(typeof decodedBinarySecret) === "undefined" ? decodedBinarySecret[typeOfDNS] : secret[typeOfDNS])
-//         });
-//     })
-//
-//
-//
-// }
 
