@@ -47,7 +47,7 @@ variable "FRONTEND_CONTAINER_IMAGE" {
 }
 
 variable "BACKEND_CONTAINER_IMAGE" {
-  default = "881750644134.dkr.ecr.eu-west-2.amazonaws.com/not-only-yoursactionsforecs-backend:731db74d"
+  default = "881750644134.dkr.ecr.eu-west-2.amazonaws.com/not-only-yoursactionsforecs-backend:b6089569"
   description = "Arn to container"
 }
 
