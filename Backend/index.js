@@ -36,10 +36,12 @@ router3.get('/',async function (req, res) {
     console.log("testDatabase")
 
     var mysql = require('mysql');
+    console.log(JSON.parse(secretManagerRDS.VALUE))
 
     var connection = mysql.createConnection(JSON.parse(secretManagerRDS.VALUE));
 
     connection.connect(function(err) {
+        console.log("connection")
       if (err) {
         console.error('Database connection failed: ' + err.stack);
         return;

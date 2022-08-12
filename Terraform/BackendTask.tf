@@ -12,6 +12,10 @@ module "fargate-backend" {
     {
       "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/TwoWeeksTask-bL8wXn",
       "name": "production/TwoWeeksTask"
+    },
+    {
+      "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/MySQL_Database_Secrets-uutavN",
+      "name": "production/MySQL_Database_Secrets"
     }
   ]
 
