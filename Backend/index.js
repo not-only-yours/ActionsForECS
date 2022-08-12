@@ -4,8 +4,8 @@ let secretManagerCredentials = {
 }
 
 let secretManagerRDS = {
-    SECRET_NAME: "production/RDS",
-    VALUE: process.env["production/RDS"]
+    SECRET_NAME: "MySQL_Database_Secrets",
+    VALUE: process.env["MySQL_Database_Secrets"]
 }
 
 const express = require("express");
