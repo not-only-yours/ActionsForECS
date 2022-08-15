@@ -8,6 +8,11 @@ let secretManagerRDS = {
     VALUE: process.env["production/MySQL_Database_Secrets"]
 }
 
+let secretManagerRedis = {
+    SECRET_NAME: "production/Elasticache",
+    VALUE: process.env["production/Elasticache"]
+}
+
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT = 3000;
@@ -28,6 +33,17 @@ router.get('/',async function (req, res) {
 router2.get('/',async function (req, res) {
     console.log("testRedis")
 
+ var redis = require('redis');
+    console.log(JSON.parse(secretManagerElasticache.VALUE))
+
+    var connection = redis.createConnection(JSON.parse(secretElasticache.VALUE));
+
+    connection.connect(function(err) {
+        console.log("connection")
+      if (err) {
+        console.error('Database connection failed: ' + err.stack);
+        return;
+      }
 
     res.json({'message': JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME});
 });
