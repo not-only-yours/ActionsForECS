@@ -40,7 +40,7 @@ function createRedisClient() {
     const client = createCluster({
         rootNodes: [
             {
-                url: 'redis://'+JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME)+':6379'
+                url: 'redis://default:password123456789@aws-ecs-cluster.mdngce.0001.euw2.cache.amazonaws.com:6379'
             }
         ]
     });
@@ -63,6 +63,7 @@ function createRedisClient() {
 //    res.json({'message': JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME});
         connection.end();
 });
+
 
 router3.get('/',async function (req, res) {
     console.log("testDatabase")
