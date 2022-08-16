@@ -33,19 +33,35 @@ router.get('/',async function (req, res) {
 router2.get('/',async function (req, res) {
     console.log("testRedis")
 
- var redis = require('redis');
-    console.log(JSON.parse(secretManagerElasticache.VALUE))
+const { createCluster }= require('redis');
+const redisClient = require('redis');
 
-    var connection = redis.createConnection(JSON.parse(secretElasticache.VALUE));
-
-    connection.connect(function(err) {
-        console.log("connection")
+function createRedisClient() {
+    const client = createCluster({
+        rootNodes: [
+            {
+                url: 'redis://'+JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME)+':6379'
+            }
+        ]
+    });
+    return client;
+}
+// var redis = require('redis');
+//    console.log(JSON.parse(secretManagerElasticache.VALUE))
+//
+//    var connection = redis.createConnection(JSON.parse(secretElasticache.VALUE));
+//
+//    connection.connect(function(err) {
+//        console.log("connection")
+      createRedisClient();
       if (err) {
+
         console.error('Database connection failed: ' + err.stack);
         return;
       }
-
-    res.json({'message': JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME});
+     res.json({'message': "Connected to database."});
+//    res.json({'message': JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME});
+        connection.end();
 });
 
 router3.get('/',async function (req, res) {
