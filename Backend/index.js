@@ -30,38 +30,32 @@ router.get('/',async function (req, res) {
     res.json({'message': "backend ok"});
 });
 
+ 
 router2.get('/',async function (req, res) {
     console.log("testRedis")
 
 const { createCluster }= require('redis');
 const redisClient = require('redis');
 
-function createRedisClient() {
-    const client = createCluster({
-        rootNodes: [
-            {
-                url: 'redis://aws-ecs-cluster.mdngce.0001.euw2.cache.amazonaws.com:6379'
-            }
-        ]
-    });
-    return client;
-}
-// var redis = require('redis');
-//    console.log(JSON.parse(secretManagerElasticache.VALUE))
-//
-//    var connection = redis.createConnection(JSON.parse(secretElasticache.VALUE));
-//
-//    connection.connect(function(err) {
-//        console.log("connection")
-      createRedisClient();
-      if (err) {
+import { createClient } from 'redis';
 
-        console.error('Database connection failed: ' + err.stack);
-        return;
-      }
-     res.json({'message': "Successfully connected to Redis!"});
-//    res.json({'message': JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME});
-        connection.end();
+const client = createClient({
+  url: 'redis://testuser:testpassword@127.0.0.1:6379'
+});
+
+await client.connect();
+
+// Returns PONG
+console.log(`Response from PING command: ${await client.ping()}`);
+
+try {
+  // This will error as this user is not allowed to run this command...
+  console.log(`Response from GET command: ${await client.get('somekey')}`);
+} catch (e) {
+  console.log(`GET command failed: ${e.message}`);
+}
+
+await client.quit();
 });
 
 
