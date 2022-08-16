@@ -40,7 +40,7 @@ function createRedisClient() {
     const client = createCluster({
         rootNodes: [
             {
-                url: 'redis://'+JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME)+':6379'
+                url: 'redis://aws-ecs-cluster.mdngce.0001.euw2.cache.amazonaws.com:6379'
             }
         ]
     });
@@ -59,7 +59,7 @@ function createRedisClient() {
         console.error('Database connection failed: ' + err.stack);
         return;
       }
-     res.json({'message': "Connected to database."});
+     res.json({'message': "Successfully connected to Redis!"});
 //    res.json({'message': JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME});
         connection.end();
 });
