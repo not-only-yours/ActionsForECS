@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "express": "^4.18.1",
-    "mysql": "latest"
+    "mysql": "latest",
+    "redis": "latest"
   }
 }
