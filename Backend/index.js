@@ -53,7 +53,7 @@ try {
 }
     
 res.json({'message': JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME});
-res.json({'message': "Successfully connected to Redis!"});
+console.log('Connected to Redis successfully!');
     
 await client.quit();
 });
