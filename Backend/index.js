@@ -40,7 +40,7 @@ const redisClient = require('redis');
 import { createClient } from 'redis';
 
 const client = createClient({
-  url: 'redis://testuser:testpassword@127.0.0.1:6379'
+  url: 'redis://new-default-user:password123456789@aws-ecs-cluster.mdngce.0001.euw2.cache.amazonaws.com:6379'
 });
 
 await client.connect();
