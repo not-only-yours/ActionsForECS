@@ -34,29 +34,28 @@ router.get('/',async function (req, res) {
 router2.get('/',async function (req, res) {
     console.log("testRedis")
 
-const { createCluster }= require('redis');
-const redisClient = require('redis');
+var RedisCluster = require('elasticache');
+ var RedisClient = require('redis');
+ console.log(JSON.parse(secretManagerElasticache.VALUE))
 
-import { createClient } from 'redis';
+ var redis = new RedisCluster({
+     servers: [
+         {
+             host: aws-ecs-cluster.mdngce.0001.euw2.cache.amazonaws.com,
+             port: 6739
+         }
+     ],
+     createClient: function (port, host) {
+         // this is the default behaviour
+         return RedisClient.createClient(port, host);
+     }
+ });
+ //connect to redis
+ redis.on("connect", function () {
+   console.log("connected");
+ });
 
-const client = createClient({
-  url: 'redis://new-default-user:password123456789@aws-ecs-cluster.mdngce.0001.euw2.cache.amazonaws.com:6379'
-});
 
-await client.connect();
-
-// Returns PONG
-console.log(`Response from PING command: ${await client.ping()}`);
-
-try {
-  // This will error as this user is not allowed to run this command...
-  console.log(`Response from GET command: ${await client.get('somekey')}`);
-} catch (e) {
-  console.log(`GET command failed: ${e.message}`);
-}
-
-await client.quit();
-});
 
 
 router3.get('/',async function (req, res) {
