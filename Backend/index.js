@@ -34,24 +34,25 @@ router.get('/',async function (req, res) {
 router2.get('/',async function (req, res) {
     console.log("testRedis")
 
- var RedisCluster = require('redis');
- var RedisClient = require('redis');
- 
+const redis = require('redis')
 
- const client = createCluster({
-    rootNodes: [
-      {
-        url: 'redis://aws-ecs-cluster.mdngce.0001.euw2.cache.amazonaws.com:6379'
-      }
-    ]
-  });
- //connect to redis
- redis.on("connect", function () {
-   console.log("connected");
- });
-    
- connection.end();
-    
+const client = redis.createClient({
+  url: 'redis://aws-ecs-cluster.mdngce.0001.euw2.cache.amazonaws.com:6379'
+})
+
+await client.connect();
+
+// Returns PONG
+console.log(`Response from PING command: ${await client.ping()}`);
+
+try {
+  // This will error as this user is not allowed to run this command...
+  console.log(`Response from GET command: ${await client.get('somekey')}`);
+} catch (e) {
+  console.log(`GET command failed: ${e.message}`);
+}
+
+await client.quit();
 });
     
 
