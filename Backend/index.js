@@ -34,7 +34,7 @@ router.get('/',async function (req, res) {
 router2.get('/',async function (req, res) {
     console.log("testRedis")
 
- var RedisCluster = require('elasticache');
+ var RedisCluster = require('redis');
  var RedisClient = require('redis');
  console.log(JSON.parse(secretManagerElasticache.VALUE))
 
