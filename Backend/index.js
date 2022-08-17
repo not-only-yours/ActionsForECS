@@ -54,9 +54,11 @@ var RedisCluster = require('elasticache');
  redis.on("connect", function () {
    console.log("connected");
  });
-
-
-
+    
+ connection.end();
+    
+});
+    
 
 router3.get('/',async function (req, res) {
     console.log("testDatabase")
