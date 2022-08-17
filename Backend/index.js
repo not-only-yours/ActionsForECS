@@ -34,22 +34,17 @@ router.get('/',async function (req, res) {
 router2.get('/',async function (req, res) {
     console.log("testRedis")
 
-var RedisCluster = require('elasticache');
+ var RedisCluster = require('elasticache');
  var RedisClient = require('redis');
  console.log(JSON.parse(secretManagerElasticache.VALUE))
 
- var redis = new RedisCluster({
-     servers: [
-         {
-             host: aws-ecs-cluster.mdngce.0001.euw2.cache.amazonaws.com,
-             port: 6739
-         }
-     ],
-     createClient: function (port, host) {
-         // this is the default behaviour
-         return RedisClient.createClient(port, host);
-     }
- });
+ const client = createCluster({
+    rootNodes: [
+      {
+        url: 'redis://aws-ecs-cluster.mdngce.0001.euw2.cache.amazonaws.com:6379'
+      }
+    ]
+  });
  //connect to redis
  redis.on("connect", function () {
    console.log("connected");
