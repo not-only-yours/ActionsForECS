@@ -37,7 +37,7 @@ router2.get('/',async function (req, res) {
 const redis = require('redis')
 
 const client = redis.createClient({
-  url: 'redis://aws-ecs-cluster.mdngce.0001.euw2.cache.amazonaws.com:6379'
+  url: 'redis://aws-ecs-cluster.mdngce.0001.euw2.cache.amazonaws.com:6739'
 })
 
 await client.connect();
