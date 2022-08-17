@@ -52,7 +52,7 @@ try {
   console.log(`GET command failed: ${e.message}`);
 }
     
-res.json({'message': "Successfully connected to Redis!", JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME});
+res.json({'message': JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME});
     
 await client.quit();
 });
