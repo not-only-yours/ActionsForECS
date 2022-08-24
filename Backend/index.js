@@ -37,7 +37,7 @@ router3.get('/',async function (req, res) {
 
     var mysql = require('mysql');
     console.log(JSON.parse(secretManagerRDS.VALUE))
-
+    try {
     var connection = mysql.createConnection(JSON.parse(secretManagerRDS.VALUE));
 
     connection.connect(function(err) {
@@ -50,6 +50,9 @@ router3.get('/',async function (req, res) {
     });
 
     connection.end();
+    } catch (e) {
+              console.log(`GET command failed: ${e.message}`);
+        }
 });
 
 app.use('/testBackend', router);

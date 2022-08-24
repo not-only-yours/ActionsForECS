@@ -23,8 +23,7 @@ router.get('/',async function (req, res) {
         path: '/testBackend'
 
     };
-
-
+    try {
     var httpreq = http.request(options, function (response) {
         response.setEncoding('utf8');
         response.on('data', function (chunk) {
@@ -32,6 +31,10 @@ router.get('/',async function (req, res) {
         });
     });
     httpreq.end();
+    } catch (e) {
+      console.log(`GET command failed: ${e.message}`);
+    }
+
 });
 
 router2.get('/',async function (req, res) {
@@ -49,7 +52,7 @@ router3.get('/',async function (req, res) {
         path: '/testRedis'
 
     };
-
+    try {
     var httpreq = http.request(options, function (response) {
         response.setEncoding('utf8');
         response.on('data', function (chunk) {
@@ -57,6 +60,9 @@ router3.get('/',async function (req, res) {
         });
     });
     httpreq.end();
+    } catch (e) {
+        console.log(`GET command failed: ${e.message}`);
+    }
 });
 
 router4.get('/',async function (req, res) {
@@ -68,7 +74,7 @@ router4.get('/',async function (req, res) {
         path: '/testDatabase'
 
     };
-
+    try {
     var httpreq = http.request(options, function (response) {
         response.setEncoding('utf8');
         response.on('data', function (chunk) {
@@ -76,6 +82,9 @@ router4.get('/',async function (req, res) {
         });
     });
     httpreq.end();
+    } catch (e) {
+        console.log(`GET command failed: ${e.message}`);
+    }
 });
 
 app.use('/testBackend', router);
