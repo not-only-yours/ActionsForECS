@@ -42,12 +42,12 @@ variable "ENV" {
 
 
 variable "FRONTEND_CONTAINER_IMAGE" {
-  default = "881750644134.dkr.ecr.eu-west-2.amazonaws.com/not-only-yoursactionsforecs-frontend:46427594"
+  default = "881750644134.dkr.ecr.eu-west-2.amazonaws.com/not-only-yoursactionsforecs-frontend:b6af9bd2"
   description = "Arn to container"
 }
 
 variable "BACKEND_CONTAINER_IMAGE" {
-  default = "881750644134.dkr.ecr.eu-west-2.amazonaws.com/not-only-yoursactionsforecs-backend:b6089569"
+  default = "881750644134.dkr.ecr.eu-west-2.amazonaws.com/not-only-yoursactionsforecs-backend:b6af9bd2"
   description = "Arn to container"
 }
 
@@ -68,4 +68,9 @@ variable "ecs_as_cpu_high_threshold_per" {
 
 variable "ALL_CIDR_BLOCKS" {
   default = ["0.0.0.0/0"]
+}
+
+
+variable "secret_name" {
+  default = "production/TwoWeeksTask"
 }

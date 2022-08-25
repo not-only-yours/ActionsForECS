@@ -1,17 +1,19 @@
 module "fargate-backend" {
-  source = "umotif-public/ecs-fargate/aws"
+  source = "./fargate-backend"
 
   name_prefix        = "ecs-fargate-backend"
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
   cluster_id         = aws_ecs_cluster.cluster.id
-
+  secrets_arns = [aws_secretsmanager_secret.dns-secrets.arn,
+    "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/MySQL_Database_Secrets-uutavN",
+  "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/Elasticache-4TuE6m"]
   platform_version = "1.4.0"
-
+  rds_arn = aws_db_instance.default.arn
   task_container_secrets = [
     {
-      "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/TwoWeeksTask-bL8wXn",
-      "name": "production/TwoWeeksTask"
+      "valueFrom": aws_secretsmanager_secret.dns-secrets.arn,
+      "name": var.secret_name
     },
     {
       "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/MySQL_Database_Secrets-uutavN",
