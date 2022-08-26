@@ -28,8 +28,30 @@ router.get('/',async function (req, res) {
 router2.get('/',async function (req, res) {
     console.log("testRedis")
 
+const redis = require('redis')
 
-    res.json({'message': JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME});
+redis.createClient({
+      host: redis_host
+      ,port: redis_port
+      ,password:redis_pwd
+      ,detect_buffers: true
+  })
+
+await client.connect();
+
+// Returns PONG
+console.log(`Response from PING command: ${await client.ping()}`);
+
+try {
+  // This will error as this user is not allowed to run this command...
+  console.log(`Response from GET command: ${await client.get('somekey')}`);
+} catch (e) {
+  console.log(`GET command failed: ${e.message}`);
+}
+
+res.json({'message': JSON.parse(secretManagerCredentials.VALUE).REDIS_DNS_NAME});
+
+await client.quit();
 });
 
 router3.get('/',async function (req, res) {

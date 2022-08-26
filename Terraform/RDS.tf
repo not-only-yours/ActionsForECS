@@ -60,7 +60,7 @@ resource "aws_db_instance" "default" {
   name                   = "TwoWeeksDatabase"
   username               = var.db_user
   password               = var.db_password
-  instance_class         = "db.t3.micro"
+  instance_class         = "db.t2.micro"
   allocated_storage      = 10
   skip_final_snapshot    = true
   license_model          = "general-public-license"
@@ -73,3 +73,4 @@ resource "aws_db_instance" "default" {
 
 
 }
+

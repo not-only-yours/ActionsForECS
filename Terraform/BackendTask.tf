@@ -18,7 +18,11 @@ module "fargate-backend" {
     {
       "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/MySQL_Database_Secrets-uutavN",
       "name": "production/MySQL_Database_Secrets"
-    }
+    },
+     {
+       "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/Elasticache-4TuE6m",
+        "name": "production/Elasticache"
+            }
   ]
 
   task_container_image   = var.BACKEND_CONTAINER_IMAGE
@@ -49,25 +53,7 @@ module "fargate-backend" {
 
   task_stop_timeout = 90
 
-  #  task_mount_points = [
-  #    {
-  #      "sourceVolume"  = aws_efs_file_system.efs.creation_token,
-  #      "containerPath" = "/usr/share/nginx/html",
-  #      "readOnly"      = true
-  #    }
-  #  ]
-  #
-  #  volume = [
-  #    {
-  #      name = "efs-html",
-  #      efs_volume_configuration = [
-  #        {
-  #          "file_system_id" : aws_efs_file_system.efs.id,
-  #          "root_directory" : "/usr/share/nginx"
-  #        }
-  #      ]
-  #    }
-  #  ]
+
 
   depends_on = [
     aws_lb.backend
