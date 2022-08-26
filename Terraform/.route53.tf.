@@ -10,6 +10,7 @@
 #  ttl = "30"
 #  records = ["${aws_route53_zone.main.name_servers.0}"]
 #}
+
 ##resource "dns_cname_record" "dev" {
 ##  zone  = "example.com."
 ##  name  = "dev"
