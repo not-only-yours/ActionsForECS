@@ -60,22 +60,39 @@ resource "aws_iam_policy" "task_execution_permissions" {
   name = "${var.name_prefix}-task_execution_permissions"
 
   policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
+    "Version":"2012-10-17",
+    "Statement":[
       {
-        Effect = "Allow"
-
-        Resource = [
-          "*"
-        ]
-
-        Action = [
-          "ecr:GetAuthorizationToken",
+        "Sid":"ListImagesInRepository",
+        "Effect":"Allow",
+        "Action":[
+          "ecr:ListImages"
+        ],
+        "Resource":"arn:aws:ecr:eu-west-2:881750644134:repository/not-only-yoursactionsforecs-frontend"
+      },
+      {
+        "Sid":"GetAuthorizationToken",
+        "Effect":"Allow",
+        "Action":[
+          "ecr:GetAuthorizationToken"
+        ],
+        "Resource":"*"
+      },
+      {
+        "Sid":"ManageRepositoryContents",
+        "Effect":"Allow",
+        "Action":[
           "ecr:BatchCheckLayerAvailability",
           "ecr:GetDownloadUrlForLayer",
+          "ecr:GetRepositoryPolicy",
+          "ecr:DescribeRepositories",
+          "ecr:ListImages",
+          "ecr:DescribeImages",
           "ecr:BatchGetImage"
-        ]
-      }]
+        ],
+        "Resource":"arn:aws:ecr:eu-west-2:881750644134:repository/not-only-yoursactionsforecs-frontend"
+      }
+    ]
   })
 }
 

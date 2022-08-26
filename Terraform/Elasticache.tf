@@ -4,7 +4,7 @@ resource "aws_security_group" "redis" {
     from_port = var.ELASTICCACHE_PORT
     to_port = var.ELASTICCACHE_PORT
     protocol = "tcp"
-    cidr_blocks = var.ALL_CIDR_BLOCKS
+    security_groups = [module.fargate-frontend.service_sg_id]
   }
 
   egress {
@@ -12,6 +12,10 @@ resource "aws_security_group" "redis" {
     to_port     = 0
    protocol    = "-1"
     cidr_blocks = var.ALL_CIDR_BLOCKS
+  }
+
+  tags = {
+    Name = "redis-backend-sg"
   }
 }
 

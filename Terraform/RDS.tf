@@ -32,16 +32,23 @@ resource "aws_db_parameter_group" "database_parameter_group" {
 resource "aws_security_group" "database_instance" {
   name   = "database_security_group"
   vpc_id = module.vpc.vpc_id
+
+
+  ingress {
+
+    from_port         = 3306
+    to_port           = 3306
+    protocol          = "tcp"
+    security_groups      = [module.fargate-backend.service_sg_id]
+
+  }
+
+  tags = {
+    Name = "rds-backend-sg"
+  }
 }
 
-resource "aws_security_group_rule" "allow_db_access" {
-  type              = "ingress"
-  from_port         = 3306
-  to_port           = 3306
-  protocol          = "tcp"
-  security_group_id = aws_security_group.database_instance.id
-  cidr_blocks       = ["0.0.0.0/0"]
-}
+
 
 
 resource "aws_db_subnet_group" "database_subnet_group" {

@@ -5,6 +5,8 @@ module "fargate-backend" {
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
   cluster_id         = aws_ecs_cluster.cluster.id
+  balancer_sg_id = aws_security_group.backend_lb.id
+
   secrets_arns = [aws_secretsmanager_secret.dns-secrets.arn,
     "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/MySQL_Database_Secrets-uutavN",
   "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/Elasticache-4TuE6m"]

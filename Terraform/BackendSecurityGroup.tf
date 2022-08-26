@@ -11,8 +11,8 @@ resource "aws_security_group" "backend_lb" {
     from_port        = 3000
     to_port          = 3000
     protocol         = "tcp"
-    cidr_blocks      = var.ALL_CIDR_BLOCKS
-    ipv6_cidr_blocks = ["::/0"]
+    security_groups      = [module.fargate-frontend.service_sg_id]
+
   }
 
   egress {
@@ -24,6 +24,6 @@ resource "aws_security_group" "backend_lb" {
   }
 
   tags = {
-    Name = "internal"
+    Name = "alb-backend-sg"
   }
 }

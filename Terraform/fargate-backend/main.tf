@@ -82,8 +82,7 @@ resource "aws_security_group" "ecs_service_backend" {
     from_port        = 3000
     to_port          = 3000
     protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    security_groups = [var.balancer_sg_id]
   }
   revoke_rules_on_delete = true
 

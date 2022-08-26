@@ -330,3 +330,10 @@ variable "cpu_architecture" {
   default     = "X86_64"
   type        = string
 }
+
+
+variable "balancer_sg_id" {
+  type        = string
+  description = "A string that contains balancer security group id."
+  default     = ""
+}
