@@ -74,3 +74,7 @@ variable "ALL_CIDR_BLOCKS" {
 variable "secret_name" {
   default = "production/TwoWeeksTask"
 }
+
+variable "DNS" {
+ default = "monitoring-ops.pp.ua"
+}
