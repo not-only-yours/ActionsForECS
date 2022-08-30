@@ -4,7 +4,7 @@ resource "aws_route53_zone" "test" {
   name = var.DNS
 }
 
-#Standard route53 DNS record for "test" pointing to an ALB
+#Standard route53 DNS record for "test" pointing to an front-end ALB
 
 resource "aws_route53_record" "test" {
   zone_id = aws_route53_zone.test.zone_id
