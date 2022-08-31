@@ -23,6 +23,12 @@ variable "ELASTICCACHE_PORT" {
 
 }
 
+variable "BACKEND_PORT" {
+  default = 6739
+  description = "backend port"
+
+}
+
 variable "AZS" {
   default = ["eu-west-2a", "eu-west-2b"]
   description = "Amazon azs"
@@ -35,7 +41,7 @@ variable "VPC_CIDR" {
 }
 
 variable "ENV" {
-  default = "dev"
+  default = "production"
   description = "Amazon access_key"
 
 }
@@ -77,4 +83,18 @@ variable "secret_name" {
 
 variable "DNS" {
  default = "monitoring-ops.pp.ua"
+}
+
+variable "ECR_REPO" {
+  default = "not-only-yoursactionsforecs"
+}
+
+
+variable "DATABASE_NAME" {
+  default = "TwoWeeksDatabase"
+}
+
+
+variable "DATABASE_PORT" {
+  default = 3306
 }

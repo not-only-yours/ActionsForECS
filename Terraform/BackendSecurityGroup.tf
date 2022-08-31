@@ -8,8 +8,8 @@ resource "aws_security_group" "backend_lb" {
 
   ingress {
     description      = "TLS from VPC"
-    from_port        = 3000
-    to_port          = 3000
+    from_port        = var.BACKEND_PORT
+    to_port          = var.BACKEND_PORT
     protocol         = "tcp"
     security_groups      = [module.fargate-frontend.service_sg_id]
 
@@ -25,5 +25,7 @@ resource "aws_security_group" "backend_lb" {
 
   tags = {
     Name = "alb-backend-sg"
-  }
+    Environment = var.ENV,
+    Terraform = true
+    }
 }

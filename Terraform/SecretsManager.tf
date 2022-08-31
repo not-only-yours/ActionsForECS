@@ -3,11 +3,11 @@ resource "random_id" "id" {
 }
 
 resource "aws_secretsmanager_secret" "dns-secrets" {
-  name = "production/TwoWeeksTask-${random_id.id.hex}"
+  name = "${var.ENV}/TwoWeeksTask-${random_id.id.hex}"
 }
 
 resource "aws_secretsmanager_secret" "redis-secrets" {
-  name = "production/Elasticache-${random_id.id.hex}"
+  name = "${var.ENV}/Elasticache-${random_id.id.hex}"
 }
 
 resource "aws_secretsmanager_secret_version" "sversion" {

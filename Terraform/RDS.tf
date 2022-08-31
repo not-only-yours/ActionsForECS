@@ -36,8 +36,8 @@ resource "aws_security_group" "database_instance" {
 
   ingress {
 
-    from_port         = 3306
-    to_port           = 3306
+    from_port         = var.DATABASE_PORT
+    to_port           = var.DATABASE_PORT
     protocol          = "tcp"
     security_groups      = [module.fargate-backend.service_sg_id]
 
@@ -63,8 +63,8 @@ resource "aws_db_instance" "default" {
   identifier             = "database-instance"
   engine                 = "mysql"
   engine_version         = "5.7"
-  port                   = 3306
-  name                   = "TwoWeeksDatabase"
+  port                   = var.DATABASE_PORT
+  name                   = var.DATABASE_NAME
   username               = var.db_user
   password               = var.db_password
   instance_class         = "db.t2.micro"

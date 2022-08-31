@@ -16,8 +16,11 @@ resource "aws_security_group" "redis" {
 
   tags = {
     Name = "redis-backend-sg"
-  }
+    Environment = var.ENV,
+    Terraform = true
+    }
 }
+
 
 
 resource "aws_elasticache_cluster" "enabled" {
@@ -30,5 +33,10 @@ resource "aws_elasticache_cluster" "enabled" {
   port                 = var.ELASTICCACHE_PORT
   security_group_ids   = [aws_security_group.redis.id]
   subnet_group_name    = module.vpc.elasticache_subnet_group_name
+
+  tags = {
+    Environment = var.ENV,
+    Terraform = true
+  }
 }
 

@@ -4,6 +4,11 @@ resource "aws_ecs_cluster" "cluster" {
     name  = "containerInsights"
     value = "disabled"
   }
+
+  tags = {
+    Environment = var.ENV,
+    Terraform = true
+  }
 }
 
 resource "aws_ecs_cluster_capacity_providers" "frontend-cluster" {

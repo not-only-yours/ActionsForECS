@@ -1,5 +1,5 @@
 resource "aws_lb" "backend" {
-  name               = "test-lb-tf"
+  name               = "alb-backend"
   internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.backend_lb.id]
@@ -7,14 +7,15 @@ resource "aws_lb" "backend" {
 
 
   tags = {
-    Environment = "production"
+    Environment = var.ENV,
+    Terraform = true
   }
 }
 
 
-resource "aws_lb_listener" "backend-alb-3000" {
+resource "aws_lb_listener" "backend-alb" {
   load_balancer_arn = aws_lb.backend.arn
-  port              = "3000"
+  port              = var.BACKEND_PORT
   protocol          = "HTTP"
 
   default_action {

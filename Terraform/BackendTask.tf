@@ -32,13 +32,13 @@ module "fargate-backend" {
   task_definition_cpu    = 256
   task_definition_memory = 512
 
-  task_container_port             = 3000
+  task_container_port             = var.BACKEND_PORT
   task_container_assign_public_ip = false
 
   target_groups = [
     {
       target_group_name = "efs-backend"
-      container_port    = 3000
+      container_port    = var.BACKEND_PORT
     }
   ]
 
@@ -61,6 +61,11 @@ module "fargate-backend" {
   depends_on = [
     aws_lb.backend
   ]
+
+  tags = {
+    Environment = var.ENV,
+    Terraform = true
+  }
 }
 
 
