@@ -1,3 +1,5 @@
+#That resource create backend alb and connect listener to it
+
 resource "aws_lb" "backend" {
   name               = "alb-backend"
   internal           = true

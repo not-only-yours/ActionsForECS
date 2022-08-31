@@ -1,3 +1,5 @@
+# that module create backend cluster and all dependencies
+
 module "fargate-backend" {
   source = "./fargate-backend"
   aws_region = var.aws-region
@@ -9,13 +11,13 @@ module "fargate-backend" {
 
   secrets_arns = [aws_secretsmanager_secret.dns-secrets.arn,
     "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/MySQL_Database_Secrets-uutavN",
-  "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/Elasticache-4TuE6m"]
+    "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/Elasticache-4TuE6m"]
   platform_version = "1.4.0"
   rds_arn = aws_db_instance.default.arn
   task_container_secrets = [
     {
       "valueFrom": aws_secretsmanager_secret.dns-secrets.arn,
-      "name": var.secret_name
+      "name": "${var.ENV}/${var.dns_secret_name}-${random_id.id.hex}"
     },
     {
       "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/MySQL_Database_Secrets-uutavN",

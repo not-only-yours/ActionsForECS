@@ -64,37 +64,50 @@ variable "ECS_NAME" {
 }
 
 variable "ecs_as_cpu_low_threshold_per" {
+  description = "Lower bound of autoscaling frontend group"
   default = "10"
 }
 
 
 variable "ecs_as_cpu_high_threshold_per" {
   default = "90"
+  description = "Higher bound of autoscaling frontend group"
 }
 
 variable "ALL_CIDR_BLOCKS" {
+  description = "cidr block that allows connection from anywhere"
   default = ["0.0.0.0/0"]
 }
 
 
-variable "secret_name" {
-  default = "production/TwoWeeksTask"
+variable "dns_secret_name" {
+  description = "name of dns secret"
+  default = "TwoWeeksTask"
+}
+
+variable "elasticache_secret_name" {
+  description = "name of Elasticache secret"
+  default = "Elasticache"
 }
 
 variable "DNS" {
+  description = "dns name"
  default = "monitoring-ops.pp.ua"
 }
 
 variable "ECR_REPO" {
+  description = "name of ecr repository"
   default = "not-only-yoursactionsforecs"
 }
 
 
 variable "DATABASE_NAME" {
+  description = "name of rds database"
   default = "TwoWeeksDatabase"
 }
 
 
 variable "DATABASE_PORT" {
+  description = "port of rds database"
   default = 3306
 }

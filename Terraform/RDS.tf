@@ -1,3 +1,5 @@
+#that file creates rds and security group that allows connection from backend fargate cluster
+
 resource "aws_db_option_group" "database_option_group" {
   name                 = "database-option-group"
   engine_name          = "mysql"

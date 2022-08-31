@@ -1,3 +1,5 @@
+#that file creates ecs fargate cluster for backend and frontend task
+
 resource "aws_ecs_cluster" "cluster" {
   name = "ecs"
   setting {

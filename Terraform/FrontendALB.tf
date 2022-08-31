@@ -1,3 +1,5 @@
+#That resource create frontend alb and connect listener to it
+
 module "frontend-alb" {
   source  = "umotif-public/alb/aws"
   version = "~> 2.0"

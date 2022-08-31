@@ -1,6 +1,5 @@
-#####
-# Security Group Config
-#####
+# Security Group Config that allow connection to the backend alb from fargate frontend cluster
+
 resource "aws_security_group" "backend_lb" {
   name        = "allow_tls"
   description = "Allow TLS inbound traffic"

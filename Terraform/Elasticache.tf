@@ -1,3 +1,5 @@
+# that file creates elasticache and security group for it
+
 resource "aws_security_group" "redis" {
   vpc_id = module.vpc.vpc_id
   ingress {
@@ -20,8 +22,6 @@ resource "aws_security_group" "redis" {
     Terraform = true
     }
 }
-
-
 
 resource "aws_elasticache_cluster" "enabled" {
 

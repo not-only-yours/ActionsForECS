@@ -1,3 +1,4 @@
+#that file creates autoscaling frontend task with cloudwatch metrics
 
 module "fargate-frontend" {
   source = "./fargate-frontend"
@@ -13,7 +14,7 @@ module "fargate-frontend" {
   task_container_secrets = [
     {
       "valueFrom": aws_secretsmanager_secret.dns-secrets.arn,
-      "name": var.secret_name
+      "name": "${var.ENV}/${var.dns_secret_name}-${random_id.id.hex}"
     }
   ]
 

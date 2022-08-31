@@ -1,3 +1,5 @@
+#that file creates ecr repositories for frontend and backend
+
 resource "aws_ecr_repository" "ecr-frontend" {
   name = "${var.ECR_REPO}-frontend"
   force_delete = true
