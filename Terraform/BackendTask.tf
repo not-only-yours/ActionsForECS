@@ -1,15 +1,17 @@
 module "fargate-backend" {
   source = "./fargate-backend"
-  aws_region = var.aws-region
+
   name_prefix        = "ecs-fargate-backend"
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
   cluster_id         = aws_ecs_cluster.cluster.id
   balancer_sg_id = aws_security_group.backend_lb.id
 
-  secrets_arns = [aws_secretsmanager_secret.dns-secrets.arn,
-    "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/MySQL_Database_Secrets-uutavN",
-  "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/Elasticache-4TuE6m"]
+  secrets_arns = [
+    aws_secretsmanager_secret.dns-secrets.arn,
+    aws_secretsmanager_secret.rds-secrets.arn,
+    aws_secretsmanager_secret.redis-secrets.arn]
+
   platform_version = "1.4.0"
   rds_arn = aws_db_instance.default.arn
   task_container_secrets = [
@@ -18,17 +20,16 @@ module "fargate-backend" {
       "name": var.secret_name
     },
     {
-      "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/MySQL_Database_Secrets-uutavN",
-      "name": "production/MySQL_Database_Secrets"
+      "valueFrom": aws_secretsmanager_secret.rds-secrets.arn,
+      "name": var.secret_db_name
     },
-     {
-       "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:production/Elasticache-4TuE6m",
-        "name": "production/Elasticache"
-            }
+    {
+      "valueFrom": aws_secretsmanager_secret.redis-secrets.arn,
+      "name": var.secret_redis_name
+    }
   ]
 
-  ecr_repository_arn = aws_ecr_repository.ecr-backend.arn
-  task_container_image   = "${aws_ecr_repository.ecr-backend.repository_url}:${var.BACKEND_CONTAINER_IMAGE}"
+  task_container_image   = var.BACKEND_CONTAINER_IMAGE
   task_definition_cpu    = 256
   task_definition_memory = 512
 
@@ -62,8 +63,3 @@ module "fargate-backend" {
     aws_lb.backend
   ]
 }
-
-
-
-
-

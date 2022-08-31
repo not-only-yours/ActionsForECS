@@ -75,6 +75,14 @@ variable "secret_name" {
   default = "production/TwoWeeksTask"
 }
 
+variable "secret_db_name" {
+  default = "production/MySQL_Database_Secrets"
+}
+
+variable "secret_redis_name" {
+  default = "production/Elasticache"
+}
+
 variable "DNS" {
  default = "monitoring-ops.pp.ua"
 }

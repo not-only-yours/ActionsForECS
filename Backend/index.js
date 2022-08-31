@@ -8,6 +8,11 @@ let secretManagerRDS = {
     VALUE: process.env["production/MySQL_Database_Secrets"]
 }
 
+let secretManagerElasticache = {
+    SECRET_NAME: "production/Elasticache",
+    VALUE: process.env["production/Elasticache"]
+}
+
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT = 3000;
@@ -30,12 +35,7 @@ router2.get('/',async function (req, res) {
 
 const redis = require('redis')
 
-redis.createClient({
-      host: redis_host
-      ,port: redis_port
-      ,password:redis_pwd
-      ,detect_buffers: true
-  })
+redis.createClient(JSON.parse(secretManagerRDS.VALUE))
 
 await client.connect();
 

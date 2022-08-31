@@ -32,3 +32,7 @@ resource "aws_elasticache_cluster" "enabled" {
   subnet_group_name    = module.vpc.elasticache_subnet_group_name
 }
 
+output "redis_name" {
+  value = aws_elasticache_cluster.enabled.cache_nodes.*.address
+  sensitive = true
+}
