@@ -116,3 +116,13 @@ variable "ARN_CERTIFICATE_FOR_HTTPS_CONNECTION_TO_FRONTEND_ALB" {
   description = "arn of frontend balancer certificate for secure connection"
   default = "arn:aws:acm:eu-west-2:881750644134:certificate/a753ec86-8554-4bb4-a099-6b027d305980"
 }
+
+variable "BACKEND_HEALTHCHECK_PATH" {
+  description = "backend healthcheck path"
+  default = "/testbackend"
+}
+
+variable "FRONTEND_HEALTHCHECK_PATH" {
+  description = "frontend healthcheck path"
+  default = "/testfrontend"
+}

@@ -37,7 +37,7 @@ module "fargate-frontend" {
 
   health_check = {
     port = "traffic-port"
-    path = "/testfrontend"
+    path = var.FRONTEND_HEALTHCHECK_PATH
   }
 
   capacity_provider_strategy = [
