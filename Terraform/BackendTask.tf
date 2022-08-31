@@ -28,7 +28,7 @@ module "fargate-backend" {
   ]
 
   ecr_repository_arn = aws_ecr_repository.ecr-backend.arn
-  task_container_image   = "${aws_ecr_repository.ecr-backend.registry_id}:${var.BACKEND_CONTAINER_IMAGE}"
+  task_container_image   = "${aws_ecr_repository.ecr-backend.repository_url}:${var.BACKEND_CONTAINER_IMAGE}"
   task_definition_cpu    = 256
   task_definition_memory = 512
 
