@@ -1,14 +1,7 @@
-#"secrets": [
-#                     {
-#                        "valueFrom": "arn:aws:secretsmanager:eu-west-2:881750644134:secret:stage/app10/polar-wi7Dow",
-#                        "name": "stage/app10/polar"
-#                     }
-#                  ],
 
-#
 module "fargate-frontend" {
   source = "./fargate-frontend"
-
+  aws_region = var.aws-region
   name_prefix        = "ecs-fargate-frontend"
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
@@ -24,8 +17,8 @@ module "fargate-frontend" {
     }
   ]
 
-
-  task_container_image   = var.FRONTEND_CONTAINER_IMAGE
+  ecr_repository_arn = aws_ecr_repository.ecr-backend.arn
+  task_container_image   = "${aws_ecr_repository.ecr-backend.registry_id}:${var.BACKEND_CONTAINER_IMAGE}"
   task_definition_cpu    = 256
   task_definition_memory = 512
 
@@ -54,26 +47,6 @@ module "fargate-frontend" {
   ]
 
   task_stop_timeout = 90
-
-  #  task_mount_points = [
-  #    {
-  #      "sourceVolume"  = aws_efs_file_system.efs.creation_token,
-  #      "containerPath" = "/usr/share/nginx/html",
-  #      "readOnly"      = true
-  #    }
-  #  ]
-  #
-  #  volume = [
-  #    {
-  #      name = "efs-html",
-  #      efs_volume_configuration = [
-  #        {
-  #          "file_system_id" : aws_efs_file_system.efs.id,
-  #          "root_directory" : "/usr/share/nginx"
-  #        }
-  #      ]
-  #    }
-  #  ]
 
   depends_on = [
     module.frontend-alb

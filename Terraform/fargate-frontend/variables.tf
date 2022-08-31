@@ -324,3 +324,16 @@ variable "cpu_architecture" {
   default     = "X86_64"
   type        = string
 }
+
+
+variable "ecr_repository_arn" {
+  type        = string
+  description = "A string that contains ecr repository name"
+  default     = ""
+}
+
+variable "aws_region" {
+  type        = string
+  description = "A string that contains awr region"
+  default     = ""
+}

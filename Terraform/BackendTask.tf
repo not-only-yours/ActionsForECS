@@ -1,6 +1,6 @@
 module "fargate-backend" {
   source = "./fargate-backend"
-
+  aws_region = var.aws-region
   name_prefix        = "ecs-fargate-backend"
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
@@ -27,7 +27,8 @@ module "fargate-backend" {
             }
   ]
 
-  task_container_image   = var.BACKEND_CONTAINER_IMAGE
+  ecr_repository_arn = aws_ecr_repository.ecr-backend.arn
+  task_container_image   = "${aws_ecr_repository.ecr-backend.registry_id}:${var.BACKEND_CONTAINER_IMAGE}"
   task_definition_cpu    = 256
   task_definition_memory = 512
 

@@ -41,11 +41,7 @@ resource "aws_iam_policy" "task_secrets_manager_backend" {
     Statement = [
       {
         Effect = "Allow"
-
         Resource = var.secrets_arns
-
-
-
         Action = [
           "secretsmanager:GetSecretValue",
           "kms:Decrypt"
@@ -90,7 +86,7 @@ resource "aws_iam_policy" "task_execution_permissions_backend" {
         "Action":[
           "ecr:ListImages"
         ],
-        "Resource":"arn:aws:ecr:eu-west-2:881750644134:repository/not-only-yoursactionsforecs-backend"
+        "Resource":var.ecr_repository_arn
       },
       {
         "Sid":"GetAuthorizationToken",
@@ -112,7 +108,7 @@ resource "aws_iam_policy" "task_execution_permissions_backend" {
           "ecr:DescribeImages",
           "ecr:BatchGetImage"
         ],
-        "Resource":"arn:aws:ecr:eu-west-2:881750644134:repository/not-only-yoursactionsforecs-backend"
+        "Resource":var.ecr_repository_arn
       }
     ]
   })

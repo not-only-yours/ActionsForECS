@@ -337,3 +337,17 @@ variable "balancer_sg_id" {
   description = "A string that contains balancer security group id."
   default     = ""
 }
+
+
+variable "ecr_repository_arn" {
+  type        = string
+  description = "A string that contains ecr repository name"
+  default     = ""
+}
+
+
+variable "aws_region" {
+  type        = string
+  description = "A string that contains awr region"
+  default     = ""
+}

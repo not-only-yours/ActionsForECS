@@ -68,7 +68,7 @@ resource "aws_iam_policy" "task_execution_permissions" {
         "Action":[
           "ecr:ListImages"
         ],
-        "Resource":"arn:aws:ecr:eu-west-2:881750644134:repository/not-only-yoursactionsforecs-frontend"
+        "Resource":var.ecr_repository_arn
       },
       {
         "Sid":"GetAuthorizationToken",
@@ -90,7 +90,7 @@ resource "aws_iam_policy" "task_execution_permissions" {
           "ecr:DescribeImages",
           "ecr:BatchGetImage"
         ],
-        "Resource":"arn:aws:ecr:eu-west-2:881750644134:repository/not-only-yoursactionsforecs-frontend"
+        "Resource":var.ecr_repository_arn
       }
     ]
   })

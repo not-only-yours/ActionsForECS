@@ -42,13 +42,13 @@ variable "ENV" {
 
 
 variable "FRONTEND_CONTAINER_IMAGE" {
-  default = "881750644134.dkr.ecr.eu-west-2.amazonaws.com/not-only-yoursactionsforecs-frontend:b6af9bd2"
   description = "Arn to container"
+  default = "b6af9bd2"
 }
 
 variable "BACKEND_CONTAINER_IMAGE" {
-  default = "881750644134.dkr.ecr.eu-west-2.amazonaws.com/not-only-yoursactionsforecs-backend:b6af9bd2"
   description = "Arn to container"
+  default = "b6af9bd2"
 }
 
 
