@@ -1,6 +1,6 @@
 resource "aws_ecr_repository" "ecr-frontend" {
   name = "${var.ECR_REPO}-frontend"
-
+  force_delete = true
   image_scanning_configuration {
     scan_on_push = false
   }
@@ -14,7 +14,7 @@ resource "aws_ecr_repository" "ecr-frontend" {
 
 resource "aws_ecr_repository" "ecr-backend" {
   name = "${var.ECR_REPO}-backend"
-
+  force_delete = true
   image_scanning_configuration {
     scan_on_push = false
   }
