@@ -16,7 +16,7 @@ resource "aws_secretsmanager_secret_version" "sversion" {
   secret_id = aws_secretsmanager_secret.dns-secrets.id
   secret_string = <<EOF
    {
-    "REDIS_DNS_NAME": "${aws_elasticache_cluster.enabled.cache_nodes[0].address}",
+    "REDIS_DNS_NAME": "${aws_elasticache_cluster.enabled.cache_nodes.0.address}",
     "DATABASE_DNS_NAME": "${aws_db_instance.default.endpoint}",
     "BACKEND_BALANCER_DNS_NAME": "${aws_lb.backend.dns_name}"
    }
