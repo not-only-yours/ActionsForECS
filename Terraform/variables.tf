@@ -85,10 +85,18 @@ variable "dns_secret_name" {
   default = "TwoWeeksTask"
 }
 
-variable "elasticache_secret_name" {
-  description = "name of Elasticache secret"
-  default = "Elasticache"
+variable "secret_db_name" {
+  default = "production/MySQL_Database_Secrets"
 }
+
+variable "secret_redis_name" {
+  default = "production/Elasticache"
+}
+
+# variable "elasticache_secret_name" {
+#   description = "name of Elasticache secret"
+#   default = "Elasticache"
+# }
 
 variable "DNS" {
   description = "dns name"
