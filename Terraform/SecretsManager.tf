@@ -28,3 +28,26 @@ resource "aws_secretsmanager_secret_version" "sversion" {
 EOF
 }
 
+# initial version
+resource "aws_secretsmanager_secret_version" "db-pass-val" {
+  secret_id = aws_secretsmanager_secret.rds-secrets.id
+  # encode in the required format
+  secret_string = jsonencode(
+    {
+      username = var.db_user
+      password = random_password.db_master_pass.result
+      engine   = "mysql"
+      host     = aws_db_instance.default.address
+      port     = aws_db_instance.default.port
+      database = var.DATABASE_NAME
+    }
+  )
+}
+
+# initial password
+resource "random_password" "db_master_pass" {
+  length           = 40
+  special          = true
+  min_special      = 5
+  override_special = "!#$%^&*()-_=+[]{}<>:?"
+}
