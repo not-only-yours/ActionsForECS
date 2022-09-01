@@ -134,3 +134,5 @@ variable "FRONTEND_HEALTHCHECK_PATH" {
   description = "frontend healthcheck path"
   default = "/testfrontend"
 }
+
+###
