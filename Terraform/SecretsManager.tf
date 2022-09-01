@@ -5,12 +5,17 @@ resource "random_id" "id" {
 }
 
 resource "aws_secretsmanager_secret" "dns-secrets" {
-  name = "${var.ENV}/${var.dns_secret_name}-${random_id.id.hex}"
+  name = "${var.ENV}/TwoWeeksTask-${random_id.id.hex}"
+}
+
+resource "aws_secretsmanager_secret" "rds-secrets" {
+  name = "${var.ENV}/RDS-${random_id.id.hex}"
 }
 
 resource "aws_secretsmanager_secret" "redis-secrets" {
-  name = "${var.ENV}/${var.elasticache_secret_name}-${random_id.id.hex}"
+  name = "${var.ENV}/Elasticache-${random_id.id.hex}"
 }
+
 
 resource "aws_secretsmanager_secret_version" "sversion" {
   secret_id = aws_secretsmanager_secret.dns-secrets.id
