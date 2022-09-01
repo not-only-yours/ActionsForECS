@@ -19,15 +19,15 @@ module "fargate-backend" {
   task_container_secrets = [
     {
       "valueFrom": aws_secretsmanager_secret.dns-secrets.arn,
-      "name": var.secret_name
+      "name":  "${var.ENV]/${var.dns_secret_name}-${random_id.id.hex}"
     },
     {
       "valueFrom": aws_secretsmanager_secret.rds-secrets.arn,
-      "name": var.secret_db_name
+      "name": "${var.ENV]/${var.secret_db_name}-${random_id.id.hex}"
     },
     {
       "valueFrom": aws_secretsmanager_secret.redis-secrets.arn,
-      "name": var.secret_redis_name
+      "name": "${var.ENV]/${var.secret_redis_name}-${random_id.id.hex}"
     }
   ]
     
