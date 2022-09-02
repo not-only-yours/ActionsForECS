@@ -37,20 +37,11 @@ router2.get('/',async function (req, res) {
 
 try {
   // This will error as this user is not allowed to run this command...
-  const redis = require('redis')
+    const redis = require('redis')
 
-  redis.createClient(JSON.parse(secretManagerElasticache.VALUE))
+    redis.createClient(JSON.parse(secretManagerElasticache.VALUE))
+    res.json({'message': "Connected to the redis."});
 
-  await redis.createClient(function(err) {
-       console.log("connection")
-       if (err) {
-          console.error('Redis connection failed: ' + err.stack);
-          return;
-          }
-          res.json({'message': "Connected to the redis."});
-
-
-})
 } catch (e) {
     console.log(`GET command failed: ${e.message}`);
 
