@@ -18,6 +18,7 @@ const app = express();
 const PORT = process.env.PORT = 3000;
 const AWS = require('aws-sdk')
 const {response} = require("express");
+const redis = require("redis");
 
 let router = express.Router();
 let router2 = express.Router();
@@ -40,14 +41,13 @@ try {
 
   redis.createClient(JSON.parse(secretManagerElasticache.VALUE))
 
-  await client.connect(function(err) {
+  await redis.createClient(function(err) {
        console.log("connection")
        if (err) {
           console.error('Redis connection failed: ' + err.stack);
           return;
           }
           res.json({'message': "Connected to the redis."});
-          client.quit();
 
 
 })
