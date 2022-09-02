@@ -24,7 +24,7 @@ variable "ELASTICCACHE_PORT" {
 }
 
 variable "BACKEND_PORT" {
-  default = 6739
+  default = 3000
   description = "backend port"
 
 }
@@ -49,12 +49,12 @@ variable "ENV" {
 
 variable "FRONTEND_CONTAINER_IMAGE" {
   description = "Arn to container"
-  default = "f7f7c5f2"
+  default = "b25e236b"
 }
 
 variable "BACKEND_CONTAINER_IMAGE" {
   description = "Arn to container"
-  default = "f7f7c5f2"
+  default = "b25e236b"
 }
 
 

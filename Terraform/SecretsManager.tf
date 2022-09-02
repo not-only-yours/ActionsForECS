@@ -49,7 +49,7 @@ resource "aws_secretsmanager_secret_version" "db-pass-val" {
   # encode in the required format
   secret_string = jsonencode(
     {
-      username = var.db_user
+      user = var.db_user
       password = random_password.db_master_pass.result
       engine   = "mysql"
       host     = aws_db_instance.default.address
