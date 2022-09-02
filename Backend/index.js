@@ -50,9 +50,9 @@ try {
           client.quit();
 
 
+})
 } catch (e) {
-  console.log(`GET command failed: ${e.message}`);
-}
+    console.log(`GET command failed: ${e.message}`);
 
 }
 });
