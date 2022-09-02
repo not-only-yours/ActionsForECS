@@ -48,8 +48,7 @@ try {
           }
           res.json({'message': "Connected to the redis."});
           client.quit();
-  // Returns PONG
-  console.log(`Response from PING command: ${await client.ping()}`);
+
 
 } catch (e) {
   console.log(`GET command failed: ${e.message}`);
