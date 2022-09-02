@@ -68,7 +68,7 @@ resource "aws_db_instance" "default" {
   port                   = var.DATABASE_PORT
   name                   = var.DATABASE_NAME
   username               = var.db_user
-  password               = var.db_password
+  password               = random_password.db_master_pass.result
   instance_class         = "db.t2.micro"
   allocated_storage      = 10
   skip_final_snapshot    = true

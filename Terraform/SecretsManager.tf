@@ -4,16 +4,24 @@ resource "random_id" "id" {
   byte_length = 5
 }
 
+# initial password
+resource "random_password" "db_master_pass" {
+  length           = 40
+  special          = true
+  min_special      = 5
+  override_special = "!#$%^&*()-_=+[]{}<>:?"
+}
+
 resource "aws_secretsmanager_secret" "dns-secrets" {
-  name = "${var.ENV}/TwoWeeksTask-${random_id.id.hex}"
+  name = "${var.ENV}/${var.dns_secret_name}-${random_id.id.hex}"
 }
 
 resource "aws_secretsmanager_secret" "rds-secrets" {
-  name = "${var.ENV}/RDS-${random_id.id.hex}"
+  name = "${var.ENV}/${var.secret_db_name}-${random_id.id.hex}"
 }
 
 resource "aws_secretsmanager_secret" "redis-secrets" {
-  name = "${var.ENV}/Elasticache-${random_id.id.hex}"
+  name = "${var.ENV}/${var.secret_redis_name}-${random_id.id.hex}"
 }
 
 
@@ -44,10 +52,3 @@ resource "aws_secretsmanager_secret_version" "db-pass-val" {
   )
 }
 
-# initial password
-resource "random_password" "db_master_pass" {
-  length           = 40
-  special          = true
-  min_special      = 5
-  override_special = "!#$%^&*()-_=+[]{}<>:?"
-}
