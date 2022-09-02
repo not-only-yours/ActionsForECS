@@ -54,7 +54,7 @@ try {
   console.log(`GET command failed: ${e.message}`);
 }
 
-
+}
 });
 
 router3.get('/',async function (req, res) {
