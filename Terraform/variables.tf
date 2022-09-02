@@ -49,12 +49,12 @@ variable "ENV" {
 
 variable "FRONTEND_CONTAINER_IMAGE" {
   description = "Arn to container"
-  default = "099bc48f"
+  default = "f7f7c5f2"
 }
 
 variable "BACKEND_CONTAINER_IMAGE" {
   description = "Arn to container"
-  default = "099bc48f"
+  default = "f7f7c5f2"
 }
 
 

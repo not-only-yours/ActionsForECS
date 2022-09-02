@@ -12,6 +12,13 @@ resource "random_password" "db_master_pass" {
   override_special = "!#$%^&*()-_=+[]{}<>:?"
 }
 
+resource "random_password" "redis_master_pass" {
+  length           = 40
+  special          = true
+  min_special      = 5
+  override_special = "!#$%^&*()-_=+[]{}<>:?"
+}
+
 resource "aws_secretsmanager_secret" "dns-secrets" {
   name = "${var.ENV}/${var.dns_secret_name}-${random_id.id.hex}"
 }
@@ -52,3 +59,15 @@ resource "aws_secretsmanager_secret_version" "db-pass-val" {
   )
 }
 
+
+# initial version
+resource "aws_secretsmanager_secret_version" "redis-pass-val" {
+  secret_id = aws_secretsmanager_secret.redis-secrets.id
+  # encode in the required format
+  secret_string = jsonencode(
+  {
+    host     = aws_elasticache_cluster.enabled.cache_nodes.0.address
+    port     = aws_elasticache_cluster.enabled.cache_nodes.0.port
+  }
+  )
+}

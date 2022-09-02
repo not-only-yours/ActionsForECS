@@ -14,7 +14,7 @@ module "fargate-frontend" {
   task_container_secrets = [
     {
       "valueFrom": aws_secretsmanager_secret.dns-secrets.arn,
-      "name": "${var.ENV}/${var.dns_secret_name}-${random_id.id.hex}"
+      "name": "${var.ENV}/${var.dns_secret_name}"
     }
   ]
 

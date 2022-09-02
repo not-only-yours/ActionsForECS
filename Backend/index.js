@@ -46,7 +46,7 @@ try {
           console.error('Redis connection failed: ' + err.stack);
           return;
           }
-          res.json({'message': "Connected to the redis."}););
+          res.json({'message': "Connected to the redis."});
           await client.quit();
   // Returns PONG
   console.log(`Response from PING command: ${await client.ping()}`);
