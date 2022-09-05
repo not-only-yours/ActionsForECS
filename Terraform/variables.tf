@@ -30,8 +30,8 @@ variable "BACKEND_PORT" {
 }
 
 variable "AZS" {
-  default = ["eu-west-2a", "eu-west-2b"]
-  description = "Amazon azs"
+  default = ["ap-south-1a", "ap-south-1b"]
+  description = "Amazon AZs"
 }
 
 
@@ -130,4 +130,4 @@ variable "FRONTEND_HEALTHCHECK_PATH" {
   default = "/testfrontend"
 }
 
-####
+
