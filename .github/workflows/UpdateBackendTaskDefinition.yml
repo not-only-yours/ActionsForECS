@@ -27,6 +27,9 @@ jobs:
         run: |
           aws ecs describe-task-definition --task-definition ecs-fargate-backend --query taskDefinition > task-definition.json
 
+      - name: Add SHORT_SHA env property with commit short sha
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def-backend
         uses: aws-actions/amazon-ecs-render-task-definition@v1
