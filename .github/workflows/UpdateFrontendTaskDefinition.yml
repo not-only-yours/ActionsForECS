@@ -39,7 +39,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: ecs-fargate-frontend
-          image: $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$SHORT_SHA
+          image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY_FRONTEND }}:${{ env.SHORT_SHA }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
