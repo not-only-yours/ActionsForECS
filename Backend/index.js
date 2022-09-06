@@ -8,11 +8,6 @@ let secretManagerRDS = {
     VALUE: process.env["production/MySQL_Database_Secrets"]
 }
 
-let secretManagerElasticache = {
-    SECRET_NAME: "production/Elasticache",
-    VALUE: process.env["production/Elasticache"]
-}
-
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT = 3000;
@@ -39,7 +34,7 @@ try {
   // This will error as this user is not allowed to run this command...
     const redis = require('redis')
 
-    redis.createClient(JSON.parse(secretManagerElasticache.VALUE))
+    redis.createClient(JSON.parse(secretManagerCredentials.VALUE))
     res.json({'message': "Connected to the redis."});
 
 } catch (e) {

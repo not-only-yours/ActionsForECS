@@ -1,0 +1,47 @@
+name: 'Update backend task definition'
+on:
+  workflow_run:
+    workflows: [ "Push image to ECR" ]
+    types:
+      - completed
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-south-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Download task def
+        run: |
+          aws ecs describe-task-definition --task-definition ecs-fargate-backend --query taskDefinition > task-definition.json
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def-backend
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY_BACKEND: not-only-yoursactionsforecs-backend
+        with:
+          task-definition: task-definition.json
+          container-name: ecs-fargate-backend
+          image: $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$SHORT_SHA
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-backend.outputs.task-definition }}
+          service: ecs-fargate-backend
+          cluster: ecs
+          wait-for-service-stability: true

@@ -27,17 +27,13 @@ resource "aws_secretsmanager_secret" "rds-secrets" {
   name = "${var.ENV}/${var.secret_db_name}-${random_id.id.hex}"
 }
 
-resource "aws_secretsmanager_secret" "redis-secrets" {
-  name = "${var.ENV}/${var.secret_redis_name}-${random_id.id.hex}"
-}
-
 
 resource "aws_secretsmanager_secret_version" "sversion" {
   secret_id = aws_secretsmanager_secret.dns-secrets.id
   secret_string = <<EOF
    {
-    "REDIS_DNS_NAME": "${aws_elasticache_cluster.enabled.cache_nodes.0.address}",
-    "DATABASE_DNS_NAME": "${aws_db_instance.default.endpoint}",
+    "host": "${aws_elasticache_cluster.enabled.cache_nodes.0.address}",
+    "port": "${aws_elasticache_cluster.enabled.cache_nodes.0.port}",
     "BACKEND_BALANCER_DNS_NAME": "${aws_lb.backend.dns_name}"
    }
 EOF
@@ -56,18 +52,5 @@ resource "aws_secretsmanager_secret_version" "db-pass-val" {
       port     = aws_db_instance.default.port
       database = var.DATABASE_NAME
     }
-  )
-}
-
-
-# initial version
-resource "aws_secretsmanager_secret_version" "redis-pass-val" {
-  secret_id = aws_secretsmanager_secret.redis-secrets.id
-  # encode in the required format
-  secret_string = jsonencode(
-  {
-    host     = aws_elasticache_cluster.enabled.cache_nodes.0.address
-    port     = aws_elasticache_cluster.enabled.cache_nodes.0.port
-  }
   )
 }

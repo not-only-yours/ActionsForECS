@@ -11,8 +11,7 @@ module "fargate-backend" {
 
   secrets_arns = [
     aws_secretsmanager_secret.dns-secrets.arn,
-    aws_secretsmanager_secret.rds-secrets.arn,
-    aws_secretsmanager_secret.redis-secrets.arn]
+    aws_secretsmanager_secret.rds-secrets.arn]
 
   platform_version = "1.4.0"
   rds_arn = aws_db_instance.default.arn
@@ -21,13 +20,9 @@ module "fargate-backend" {
       "valueFrom": aws_secretsmanager_secret.dns-secrets.arn,
       "name": "${var.ENV}/${var.dns_secret_name}"
     },
-{
+    {
       "valueFrom": aws_secretsmanager_secret.rds-secrets.arn,
       "name": "${var.ENV}/${var.secret_db_name}"
-    },
-       {
-      "valueFrom": aws_secretsmanager_secret.redis-secrets.arn,
-      "name": "${var.ENV}/${var.secret_redis_name}"
     }
   ]
     

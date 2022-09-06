@@ -1,0 +1,37 @@
+name: 'Push image to ECR'
+on:
+  push:
+  pull_request:
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-south-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Add SHORT_SHA env property with commit short sha
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY_FRONTEND: not-only-yoursactionsforecs-frontend
+          ECR_REPOSITORY_BACKEND: not-only-yoursactionsforecs-backend
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$SHORT_SHA ./Frontend
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$SHORT_SHA ./Backend
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY-frontend:$SHORT_SHA
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY-backend:$SHORT_SHA
