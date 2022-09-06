@@ -33,5 +33,5 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$SHORT_SHA ./Frontend
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$SHORT_SHA ./Backend
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY-frontend:$SHORT_SHA
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY-backend:$SHORT_SHA
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$SHORT_SHA
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$SHORT_SHA
