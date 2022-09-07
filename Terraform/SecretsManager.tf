@@ -54,3 +54,15 @@ resource "aws_secretsmanager_secret_version" "db-pass-val" {
     }
   )
 }
+
+# module "secret-manager-with-rotation" {
+#   source         = "giuseppeborgese/secret-manager-with-rotation/aws"
+#   version        = "1.0.2"
+#   name           = "DBPassRotation"
+#   rotation_days  = 7
+#   subnets_lambda = [var.PRIVATE_SUBNET]
+#   mysql_username = var.db_user
+#   mysql_dbname   = var.DATABASE_NAME
+#   mysql_host     =  aws_db_instance.default.address
+#   mysql_password = random_password.db_master_pass.result
+# }
