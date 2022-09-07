@@ -55,6 +55,8 @@ resource "aws_secretsmanager_secret_version" "db-pass-val" {
   )
 }
 
+# Rotation RDS pasword every 7days with lambda func
+
 # module "secret-manager-with-rotation" {
 #   source         = "giuseppeborgese/secret-manager-with-rotation/aws"
 #   version        = "1.0.2"
