@@ -28,8 +28,8 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY_FRONTEND: not-only-yoursactionsforecs-frontend
-          ECR_REPOSITORY_BACKEND: not-only-yoursactionsforecs-backend
+          ECR_REPOSITORY_FRONTEND: production-not-only-yoursactionsforecs-frontend
+          ECR_REPOSITORY_BACKEND: production-not-only-yoursactionsforecs-backend
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$SHORT_SHA ./Frontend
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$SHORT_SHA ./Backend
