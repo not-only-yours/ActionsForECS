@@ -388,3 +388,104 @@ resource "aws_ecs_service" "service" {
     },
   )
 }
+
+
+resource "aws_security_group_rule" "frontend-task-ingress-80" {
+  security_group_id        = aws_security_group.ecs_service.id
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = 80
+  to_port                  = 80
+  source_security_group_id = aws_security_group.ecs_service.id
+}
+
+resource "aws_security_group_rule" "frontend-task-ingress-443" {
+  security_group_id        = aws_security_group.ecs_service.id
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = 443
+  to_port                  = 443
+  source_security_group_id = aws_security_group.ecs_service.id
+}
+
+
+resource "aws_appautoscaling_target" "ecs-target-frontend" {
+  max_capacity       = 4
+  min_capacity       = 1
+  resource_id        = "service/${var.cluster_name}/${aws_ecs_service.service.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "cpu-utilization-high-frontend" {
+  alarm_name          = "${var.cluster_name}-CPU-Utilization-High-${var.ecs_as_cpu_high_threshold_per}"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = var.ecs_as_cpu_high_threshold_per
+
+  dimensions = {
+    ClusterName = var.cluster_name
+    ServiceName = aws_ecs_service.service.name
+  }
+
+  alarm_actions = [aws_appautoscaling_policy.app-up-frontend.arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "cpu-utilization-low-frontend" {
+  alarm_name          = "${var.cluster_name}-CPU-Utilization-Low-${var.ecs_as_cpu_low_threshold_per}"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = var.ecs_as_cpu_low_threshold_per
+
+  dimensions = {
+    ClusterName = var.cluster_name
+    ServiceName = aws_ecs_service.service.name
+  }
+
+  alarm_actions = [aws_appautoscaling_policy.app-down-frontend.arn]
+}
+
+resource "aws_appautoscaling_policy" "app-up-frontend" {
+  name               = "app-scale-up"
+  service_namespace  = aws_appautoscaling_target.ecs-target-frontend.service_namespace
+  resource_id        = aws_appautoscaling_target.ecs-target-frontend.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs-target-frontend.scalable_dimension
+
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown                = 60
+    metric_aggregation_type = "Average"
+
+    step_adjustment {
+      metric_interval_lower_bound = 0
+      scaling_adjustment          = 1
+    }
+  }
+}
+
+resource "aws_appautoscaling_policy" "app-down-frontend" {
+  name               = "app-scale-down"
+  service_namespace  = aws_appautoscaling_target.ecs-target-frontend.service_namespace
+  resource_id        = aws_appautoscaling_target.ecs-target-frontend.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs-target-frontend.scalable_dimension
+
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown                = 300
+    metric_aggregation_type = "Average"
+
+    step_adjustment {
+      metric_interval_upper_bound = 0
+      scaling_adjustment          = -1
+    }
+  }
+}

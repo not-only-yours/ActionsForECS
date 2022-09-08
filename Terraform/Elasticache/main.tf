@@ -1,26 +1,26 @@
 # that file creates elasticache and security group for it
 
 resource "aws_security_group" "redis" {
-  vpc_id = module.vpc.vpc_id
+  vpc_id = var.vpc_id
   ingress {
-    from_port = var.ELASTICCACHE_PORT
-    to_port = var.ELASTICCACHE_PORT
+    from_port = var.port
+    to_port = var.port
     protocol = "tcp"
-    security_groups = [module.fargate-frontend.service_sg_id]
+    security_groups = var.security_groups_allow_traffic
   }
 
   egress {
     from_port   = 0
     to_port     = 0
-   protocol    = "-1"
-    cidr_blocks = var.ALL_CIDR_BLOCKS
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
     Name = "redis-backend-sg"
-    Environment = var.ENV,
+    Environment = var.environment,
     Terraform = true
-    }
+  }
 }
 
 resource "aws_elasticache_cluster" "enabled" {
@@ -30,12 +30,12 @@ resource "aws_elasticache_cluster" "enabled" {
   node_type            = "cache.t2.micro"
   num_cache_nodes      = 1
   parameter_group_name = "default.redis6.x"
-  port                 = var.ELASTICCACHE_PORT
+  port                 = var.port
   security_group_ids   = [aws_security_group.redis.id]
-  subnet_group_name    = module.vpc.elasticache_subnet_group_name
+  subnet_group_name    = var.subnets
 
   tags = {
-    Environment = var.ENV,
+    Environment = var.environment,
     Terraform = true
   }
 }

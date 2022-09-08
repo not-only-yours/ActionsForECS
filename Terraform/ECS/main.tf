@@ -1,14 +1,13 @@
-#that file creates ecs fargate cluster for backend and frontend task
 
 resource "aws_ecs_cluster" "cluster" {
-  name = "ecs"
+  name = "${var.environment}-${var.name}"
   setting {
     name  = "containerInsights"
     value = "disabled"
   }
 
   tags = {
-    Environment = var.ENV,
+    Environment = var.environment,
     Terraform = true
   }
 }
@@ -22,4 +21,3 @@ resource "aws_ecs_cluster_capacity_providers" "frontend-cluster" {
     capacity_provider = "FARGATE_SPOT"
   }
 }
-

@@ -337,3 +337,20 @@ variable "aws_region" {
   description = "A string that contains awr region"
   default     = ""
 }
+
+variable "cluster_name" {
+  type = string
+  description = "Name of the ecs cluster"
+}
+
+
+variable "ecs_as_cpu_low_threshold_per" {
+  description = "Lower bound of autoscaling frontend group"
+  default = "10"
+}
+
+
+variable "ecs_as_cpu_high_threshold_per" {
+  default = "90"
+  description = "Higher bound of autoscaling frontend group"
+}

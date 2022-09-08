@@ -98,9 +98,14 @@ variable "DNS" {
  default = "monitoring-ops.pp.ua"
 }
 
-variable "ECR_REPO" {
-  description = "name of ecr repository"
-  default = "not-only-yoursactionsforecs"
+variable "ecr_name_frontend" {
+  description = "name of frontend ecr repository"
+  default = "not-only-yoursactionsforecs-frontend"
+}
+
+variable "ecr_name_backend" {
+  description = "name of bacend ecr repository"
+  default = "not-only-yoursactionsforecs-backend"
 }
 
 
@@ -130,3 +135,20 @@ variable "FRONTEND_HEALTHCHECK_PATH" {
   default = "/testfrontend"
 }
 
+
+variable "ecs_cluster_name" {
+  description = "name of ecs cluster"
+  default = "MyCluster"
+}
+
+variable "rds_database_name" {
+  description = "name of rds database"
+  default = "superbase"
+  type = string
+}
+
+
+variable "elasticache_cluster" {
+  description = "name of elasticache cluster"
+  default = "supercluster"
+}

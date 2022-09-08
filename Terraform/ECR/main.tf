@@ -1,34 +1,20 @@
-#that file creates ecr repositories for frontend and backend
-
-resource "aws_ecr_repository" "ecr-frontend" {
-  name = "${var.ECR_REPO}-frontend"
+resource "aws_ecr_repository" "ecr" {
+  name = "${var.environment}-${var.name}"
   force_delete = true
   image_scanning_configuration {
     scan_on_push = false
   }
 
   tags = {
-    Environment = var.ENV,
+    Environment = var.environment,
     Terraform = true
   }
 }
 
-
-resource "aws_ecr_repository" "ecr-backend" {
-  name = "${var.ECR_REPO}-backend"
-  force_delete = true
-  image_scanning_configuration {
-    scan_on_push = false
-  }
-
-  tags = {
-    Environment = var.ENV,
-    Terraform = true
-  }
-}
 
 resource "aws_ecr_lifecycle_policy" "ecr-policy" {
-  repository = aws_ecr_repository.ecr-frontend.name
+  count = var.max_images_in_repo == 0 ? 0 : 1
+  repository = aws_ecr_repository.ecr.name
 
   policy = <<EOF
 {
@@ -40,7 +26,7 @@ resource "aws_ecr_lifecycle_policy" "ecr-policy" {
                 "tagStatus": "tagged",
                 "tagPrefixList": ["v"],
                 "countType": "imageCountMoreThan",
-                "countNumber": 5
+                "countNumber": ${var.max_images_in_repo}
             },
             "action": {
                 "type": "expire"
@@ -50,4 +36,3 @@ resource "aws_ecr_lifecycle_policy" "ecr-policy" {
 }
 EOF
 }
-#
