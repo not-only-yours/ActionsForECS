@@ -396,7 +396,7 @@ resource "aws_security_group_rule" "frontend-task-ingress-80" {
   protocol                 = "tcp"
   from_port                = 80
   to_port                  = 80
-  source_security_group_id = aws_security_group.ecs_service.id
+  source_security_group_id = var.source_security_group_id
 }
 
 resource "aws_security_group_rule" "frontend-task-ingress-443" {
@@ -405,7 +405,7 @@ resource "aws_security_group_rule" "frontend-task-ingress-443" {
   protocol                 = "tcp"
   from_port                = 443
   to_port                  = 443
-  source_security_group_id = aws_security_group.ecs_service.id
+  source_security_group_id = var.source_security_group_id
 }
 
 

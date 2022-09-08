@@ -354,3 +354,7 @@ variable "ecs_as_cpu_high_threshold_per" {
   default = "90"
   description = "Higher bound of autoscaling frontend group"
 }
+
+variable "source_security_group_id" {
+  description = "security group from which traffic allows"
+}

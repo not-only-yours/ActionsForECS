@@ -79,8 +79,8 @@ resource "aws_security_group" "ecs_service_backend" {
   )
   ingress {
     description      = "TLS from VPC"
-    from_port        = 3000
-    to_port          = 3000
+    from_port        = var.task_container_port
+    to_port          = var.task_container_port
     protocol         = "tcp"
     security_groups = [var.balancer_sg_id]
   }

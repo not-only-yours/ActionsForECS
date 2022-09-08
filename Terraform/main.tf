@@ -108,7 +108,7 @@ module "fargate-frontend" {
   private_subnet_ids = module.vpc.private_subnets
   cluster_id         = module.ecs-cluster.id
   secrets_arns = [aws_secretsmanager_secret.dns-secrets.arn]
-
+  source_security_group_id = module.frontend-alb.sg_id
   platform_version = "1.4.0"
 
   task_container_secrets = [
@@ -247,7 +247,7 @@ module "elasticache" {
   environment = var.environment
   port = var.elasticache_port
   vpc_id = module.vpc.vpc_id
-  security_groups_allow_traffic = [module.fargate-frontend.service_sg_id]
+  security_groups_allow_traffic = [module.fargate-backend.service_sg_id]
   subnets = module.vpc.elasticache_subnet_group_name
 }
 
