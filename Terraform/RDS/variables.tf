@@ -33,3 +33,9 @@ variable "subnets" {
   description = "subnets in which database creates"
   type = list(string)
 }
+
+variable "rotation_days" {
+  description = "days before password rotation"
+  default = 7
+  type = number
+}
