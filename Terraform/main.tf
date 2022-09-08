@@ -13,12 +13,12 @@ module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
   name = "main-vpc"
-  cidr = var.VPC_CIDR
+  cidr = var.vpc_CIDR
 
-  azs             = var.AZS
-  public_subnets  = var.PUBLIC_SUBNET
-  private_subnets = var.PRIVATE_SUBNET
-  elasticache_subnets = var.ELASTICCACHE_SUBNET
+  azs             = var.availability_zones
+  public_subnets  = var.public_subnets
+  private_subnets = var.private_subnets
+  elasticache_subnets = var.elasticache_subnets
 
   #One NAT Gateway per availability zone
   enable_nat_gateway = true
@@ -28,7 +28,7 @@ module "vpc" {
 
   tags = {
     Terraform = "true"
-    Environment = var.ENV
+    Environment = var.environment
   }
 }
 
@@ -45,10 +45,10 @@ module "frontend-alb" {
   name = "frontend-alb"
   is_internal = false
   subnets = module.vpc.public_subnets
-  certificate_arn = var.ARN_CERTIFICATE_FOR_HTTPS_CONNECTION_TO_FRONTEND_ALB
+  certificate_arn = var.arn_certificate_for_HTTPS_connection_to_frontend_ALB
   target_group_arn = module.fargate-frontend.target_group_arn[0]
   vpc_id = module.vpc.vpc_id
-  environment = var.ENV
+  environment = var.environment
 }
 
 
@@ -57,10 +57,10 @@ module "backend-alb" {
   name = "backend-alb"
   is_internal = true
   subnets = module.vpc.private_subnets
-  internal_port = var.BACKEND_PORT
+  internal_port = var.backend_port
   target_group_arn = module.fargate-backend.target_group_arn[0]
   vpc_id = module.vpc.vpc_id
-  environment = var.ENV
+  environment = var.environment
   security_groups_ingress_traffic = [module.fargate-frontend.service_sg_id]
 }
 
@@ -72,7 +72,7 @@ module "backend-alb" {
 module "frontend-ecr" {
   source = "./ECR"
   name = var.ecr_name_frontend
-  environment = var.ENV
+  environment = var.environment
   max_images_in_repo = 5
 }
 
@@ -80,7 +80,7 @@ module "frontend-ecr" {
 module "backend-ecr" {
   source = "./ECR"
   name = var.ecr_name_backend
-  environment = var.ENV
+  environment = var.environment
   max_images_in_repo = 5
 }
 
@@ -91,7 +91,7 @@ module "backend-ecr" {
 module "ecs-cluster" {
   source = "./ECS"
   name = var.ecs_cluster_name
-  environment = var.ENV
+  environment = var.environment
 }
 
 #######
@@ -114,12 +114,12 @@ module "fargate-frontend" {
   task_container_secrets = [
     {
       "valueFrom": aws_secretsmanager_secret.dns-secrets.arn,
-      "name": "${var.ENV}/${var.dns_secret_name}"
+      "name": "${var.environment}/${var.dns_secret_name}"
     }
   ]
 
   ecr_repository_arn = module.frontend-ecr.arn
-  task_container_image   = "${module.frontend-ecr.repository_url}:${var.FRONTEND_CONTAINER_IMAGE}"
+  task_container_image   = "${module.frontend-ecr.repository_url}:${var.frontend_container_image}"
   task_definition_cpu    = 256
   task_definition_memory = 512
 
@@ -137,7 +137,7 @@ module "fargate-frontend" {
 
   health_check = {
     port = "traffic-port"
-    path = var.FRONTEND_HEALTHCHECK_PATH
+    path = var.frontend_healthcheck_path
   }
 
   capacity_provider_strategy = [
@@ -173,32 +173,32 @@ module "fargate-backend" {
   task_container_secrets = [
     {
       "valueFrom": aws_secretsmanager_secret.dns-secrets.arn,
-      "name": "${var.ENV}/${var.dns_secret_name}"
+      "name": "${var.environment}/${var.dns_secret_name}"
     },
     {
       "valueFrom": module.rds-database.rds_secrets_arn,
-      "name": "${var.ENV}/${var.secret_db_name}"
+      "name": "${var.environment}/${var.secret_db_name}"
     }
   ]
 
   ecr_repository_arn = module.backend-ecr.arn
-  task_container_image   = "${module.backend-ecr.repository_url}:${var.BACKEND_CONTAINER_IMAGE}"
+  task_container_image   = "${module.backend-ecr.repository_url}:${var.backend_container_image}"
   task_definition_cpu    = 256
   task_definition_memory = 512
 
-  task_container_port             = var.BACKEND_PORT
+  task_container_port             = var.backend_port
   task_container_assign_public_ip = false
 
   target_groups = [
     {
       target_group_name = "efs-backend"
-      container_port    = var.BACKEND_PORT
+      container_port    = var.backend_port
     }
   ]
 
   health_check = {
     port = "traffic-port"
-    path = var.BACKEND_HEALTHCHECK_PATH
+    path = var.backend_healthcheck_path
   }
 
   capacity_provider_strategy = [
@@ -211,7 +211,7 @@ module "fargate-backend" {
   task_stop_timeout = 90
 
   tags = {
-    Environment = var.ENV,
+    Environment = var.environment,
     Terraform = true
   }
 }
@@ -227,7 +227,7 @@ module "fargate-backend" {
 module "rds-database" {
   source = "./RDS"
   name = var.rds_database_name
-  environment = var.ENV
+  environment = var.environment
   vpc_id = module.vpc.vpc_id
   db_user = var.db_user
   security_groups_allow_traffic = [module.fargate-backend.service_sg_id]
@@ -244,8 +244,8 @@ module "elasticache" {
   source = "./Elasticache"
 
   name = var.elasticache_cluster
-  environment = var.ENV
-  port = var.ELASTICCACHE_PORT
+  environment = var.environment
+  port = var.elasticache_port
   vpc_id = module.vpc.vpc_id
   security_groups_allow_traffic = [module.fargate-frontend.service_sg_id]
   subnets = module.vpc.elasticache_subnet_group_name
@@ -289,7 +289,7 @@ resource "random_id" "id" {
 }
 
 resource "aws_secretsmanager_secret" "dns-secrets" {
-  name = "${var.ENV}/${var.dns_secret_name}-${random_id.id.hex}"
+  name = "${var.environment}/${var.dns_secret_name}-${random_id.id.hex}"
 }
 
 resource "aws_secretsmanager_secret_version" "sversion" {

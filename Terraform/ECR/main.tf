@@ -21,7 +21,7 @@ resource "aws_ecr_lifecycle_policy" "ecr-policy" {
     "rules": [
         {
             "rulePriority": 1,
-            "description": "Keep last 5 images",
+            "description": "Keep last ${var.max_images_in_repo} images",
             "selection": {
                 "tagStatus": "tagged",
                 "tagPrefixList": ["v"],
