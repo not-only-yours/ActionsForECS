@@ -35,7 +35,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY_BACKEND: not-only-yoursactionsforecs-backend
+          ECR_REPOSITORY_BACKEND: production-not-only-yoursactionsforecs-backend
         with:
           task-definition: task-definition.json
           container-name: ecs-fargate-backend
