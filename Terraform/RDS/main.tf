@@ -41,7 +41,7 @@ resource "aws_security_group" "database_instance" {
     from_port         = var.port
     to_port           = var.port
     protocol          = "tcp"
-    security_groups      = var.security_groups_allow_traffic
+    security_groups   = concat(var.security_groups_allow_traffic, formatlist(aws_security_group.lambda.id))
 
   }
 
