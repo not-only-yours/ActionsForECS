@@ -49,7 +49,13 @@ router3.get('/',async function (req, res) {
     var mysql = require('mysql');
     console.log(JSON.parse(secretManagerRDS.VALUE))
     try {
-    var connection = mysql.createConnection(JSON.parse(secretManagerRDS.VALUE));
+    var connection = mysql.createConnection({
+        host: secretManagerCredentials.VALUE.host,
+        port: secretManagerCredentials.VALUE.port,
+        user: secretManagerCredentials.VALUE.username,
+        password: secretManagerCredentials.VALUE.password,
+        database: secretManagerCredentials.VALUE.dbname
+    });
 
     connection.connect(function(err) {
         console.log("connection")

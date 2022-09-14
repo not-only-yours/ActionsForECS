@@ -19,9 +19,9 @@ variable "port" {
   default = 6739
 }
 
-variable "security_groups_allow_traffic" {
+variable "security_group_allow_traffic" {
   description = "security groups from witch inbound traffic allows"
-  type = list(string)
+  type = string
 }
 
 variable "subnets" {

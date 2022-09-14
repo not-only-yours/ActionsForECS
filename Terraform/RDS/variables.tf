@@ -24,9 +24,9 @@ variable "db_user" {
   type = string
 }
 
-variable "security_groups_allow_traffic" {
+variable "security_group_allow_traffic" {
   description = "security groups from witch inbound traffic allows"
-  type = list(string)
+  type = string
 }
 
 variable "subnets" {

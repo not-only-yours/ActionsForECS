@@ -46,3 +46,8 @@ variable "environment" {
   description = "environment"
   type = string
 }
+
+variable "ingress_cidr" {
+  description = "ingress cidr"
+  type = list(string)
+}

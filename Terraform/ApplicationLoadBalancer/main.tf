@@ -64,7 +64,7 @@ resource "aws_security_group" "security_group_lb" {
     to_port          = var.is_internal  ? var.internal_port                    : "443"
     protocol         = "tcp"
     security_groups  = var.is_internal  ? var.security_groups_ingress_traffic  : []
-    cidr_blocks       = var.is_internal ? []                                   : ["0.0.0.0/0"]
+    cidr_blocks       = var.is_internal ? var.ingress_cidr                     : ["0.0.0.0/0"]
   }
 
   egress {
@@ -82,6 +82,18 @@ resource "aws_security_group" "security_group_lb" {
   }
 }
 
+#module "balancer-sg" {
+#  source = "../SecurityGroup"
+#  vpc_id = var.vpc_id
+#  name = var.name
+#  environment = var.environment
+#  inbound_security_groups = [{
+#    description = "inbound balancer",
+#    from_port = var.port,
+#    to_port = var.port,
+#    security_groups   = concat(var.security_groups_allow_traffic, formatlist(aws_security_group.lambda.id))
+#  }]
+#}
 
 resource "aws_security_group_rule" "frontend-alb-ingress-443" {
   count = var.is_internal ? 0 : 1

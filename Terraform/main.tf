@@ -230,8 +230,9 @@ module "rds-database" {
   environment = var.environment
   vpc_id = module.vpc.vpc_id
   db_user = var.db_user
-  security_groups_allow_traffic = [module.fargate-backend.service_sg_id]
+  security_group_allow_traffic = module.fargate-backend.service_sg_id
   subnets = module.vpc.private_subnets
+  rotation_days = 1
 }
 
 
@@ -247,7 +248,7 @@ module "elasticache" {
   environment = var.environment
   port = var.elasticache_port
   vpc_id = module.vpc.vpc_id
-  security_groups_allow_traffic = [module.fargate-backend.service_sg_id]
+  security_group_allow_traffic = module.fargate-backend.service_sg_id
   subnets = module.vpc.elasticache_subnet_group_name
 }
 
@@ -302,3 +303,17 @@ resource "aws_secretsmanager_secret_version" "sversion" {
    }
 EOF
 }
+
+
+#module "rds-sg" {
+#  source = "./SecurityGroup"
+#  vpc_id = module.vpc.vpc_id
+#  name = "rds"
+#  environment = "test"
+#  ingress_cidr_blocks = [{
+#    description = "inbound 80",
+#    from_port = 80,
+#    to_port = 80,
+#    cidr_blocks = ["0.0.0.0/0"]
+#  }]
+#}

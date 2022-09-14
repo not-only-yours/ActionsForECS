@@ -31,24 +31,44 @@ resource "aws_db_parameter_group" "database_parameter_group" {
 # CREATE A SECURITY GROUP TO ALLOW ACCESS TO THE RDS INSTANCE
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "aws_security_group" "database_instance" {
-  name   = "${var.environment}-${var.name}-security-group"
+module "rds-sg" {
+  source = "../SecurityGroup"
   vpc_id = var.vpc_id
-
-
-  ingress {
-
-    from_port         = var.port
-    to_port           = var.port
-    protocol          = "tcp"
-    security_groups   = concat(var.security_groups_allow_traffic, formatlist(aws_security_group.lambda.id))
-
-  }
-
-  tags = {
-    Name = "${var.environment}-${var.name}-security-group"
-  }
+  name = var.name
+  environment = var.environment
+  inbound_security_groups = [{
+    description = "inbound backend ${var.port}",
+    from_port = var.port,
+    to_port = var.port,
+    security_group   = var.security_group_allow_traffic
+    },
+    {
+    description = "inbound lambda ${var.port}",
+    from_port = var.port,
+    to_port = var.port,
+    security_group   = aws_security_group.lambda.id
+    }
+    ]
 }
+
+#resource "aws_security_group" "database_instance" {
+#  name   = "${var.environment}-${var.name}-security-group"
+#  vpc_id = var.vpc_id
+#
+#
+#  ingress {
+#
+#    from_port         = var.port
+#    to_port           = var.port
+#    protocol          = "tcp"
+#    security_groups   = concat(var.security_groups_allow_traffic, formatlist(aws_security_group.lambda.id))
+#
+#  }
+#
+#  tags = {
+#    Name = "${var.environment}-${var.name}-security-group"
+#  }
+#}
 
 
 
@@ -74,11 +94,10 @@ resource "aws_db_instance" "default" {
   skip_final_snapshot    = true
   license_model          = "general-public-license"
   db_subnet_group_name   = aws_db_subnet_group.database_subnet_group.id
-  vpc_security_group_ids = [aws_security_group.database_instance.id]
+  vpc_security_group_ids = [module.rds-sg.id]
   publicly_accessible    = false
   parameter_group_name   = aws_db_parameter_group.database_parameter_group.id
   option_group_name      = aws_db_option_group.database_option_group.id
-
 }
 
 resource "random_id" "id" {
@@ -102,12 +121,12 @@ resource "aws_secretsmanager_secret_version" "db-pass-val" {
   # encode in the required format
   secret_string = jsonencode(
   {
-    user = var.db_user
-    password = random_password.db_master_pass.result
     engine   = "mysql"
     host     = aws_db_instance.default.address
+    username = var.db_user
+    password = random_password.db_master_pass.result
+    dbname   = var.name
     port     = aws_db_instance.default.port
-    database = var.name
   }
   )
 }
