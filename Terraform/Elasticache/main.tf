@@ -29,7 +29,7 @@ module "redis-sg" {
   name = var.name
   environment = var.environment
   inbound_security_groups = [{
-    description = "inbound ${var.port}",
+    description = "${var.environment}-${var.name} inbound to redis ${var.port}",
     from_port = var.port,
     to_port = var.port,
     security_group = var.security_group_allow_traffic

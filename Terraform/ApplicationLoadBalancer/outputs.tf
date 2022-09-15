@@ -1,5 +1,5 @@
 output "sg_id" {
-  value = aws_security_group.security_group_lb.id
+  value = module.balancer-sg.id
 }
 
 output "dns_name" {

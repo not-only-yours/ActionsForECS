@@ -37,13 +37,13 @@ module "rds-sg" {
   name = var.name
   environment = var.environment
   inbound_security_groups = [{
-    description = "inbound backend ${var.port}",
+    description = "${var.environment}-${var.name} inbound backend ${var.port}",
     from_port = var.port,
     to_port = var.port,
     security_group   = var.security_group_allow_traffic
     },
     {
-    description = "inbound lambda ${var.port}",
+    description = "${var.environment}-${var.name} inbound lambda ${var.port}",
     from_port = var.port,
     to_port = var.port,
     security_group   = aws_security_group.lambda.id

@@ -61,7 +61,7 @@ module "backend-alb" {
   target_group_arn = module.fargate-backend.target_group_arn[0]
   vpc_id = module.vpc.vpc_id
   environment = var.environment
-  security_groups_ingress_traffic = [module.fargate-frontend.service_sg_id]
+  security_groups_ingress_traffic = module.fargate-frontend.service_sg_id
 }
 
 

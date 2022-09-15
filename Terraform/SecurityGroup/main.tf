@@ -1,6 +1,6 @@
 resource "aws_security_group" "security_group" {
   name        = "${var.environment}-${var.name}-security-group"
-
+  vpc_id = var.vpc_id
   tags = {
     Name = "${var.name}-sg"
     Environment = var.environment,

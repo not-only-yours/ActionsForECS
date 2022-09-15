@@ -38,8 +38,8 @@ variable "internal_port" {
 
 variable "security_groups_ingress_traffic" {
   description = "security groups for witch ingress traffic allows"
-  type = list(string)
-  default = []
+  type = string
+  default = ""
 }
 
 variable "environment" {
@@ -50,4 +50,5 @@ variable "environment" {
 variable "ingress_cidr" {
   description = "ingress cidr"
   type = list(string)
+  default = []
 }
