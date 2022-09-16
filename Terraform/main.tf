@@ -61,7 +61,7 @@ module "backend-alb" {
   target_group_arn = module.fargate-backend.target_group_arn[0]
   vpc_id = module.vpc.vpc_id
   environment = var.environment
-  security_groups_ingress_traffic = module.fargate-frontend.service_sg_id
+  security_groups_ingress_traffic = module.fargate-frontend.sg_id
 }
 
 
@@ -101,9 +101,12 @@ module "ecs-cluster" {
 #that file creates autoscaling frontend task with cloudwatch metrics
 
 module "fargate-frontend" {
-  source = "./fargate-frontend"
-  aws_region = var.aws-region
-  name_prefix        = "ecs-fargate-frontend"
+  ecs_cluster_name = module.ecs-cluster.name
+  environment = var.environment
+  source = "./FargateCluster"
+  autoscaling_enabled = true
+
+  name        = "ecs-fargate-frontend"
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
   cluster_id         = module.ecs-cluster.id
@@ -123,9 +126,8 @@ module "fargate-frontend" {
   task_definition_cpu    = 256
   task_definition_memory = 512
 
-  task_container_port             = 80
+  container_port             = 80
   task_container_assign_public_ip = false
-
 
 
   target_groups = [
@@ -148,7 +150,6 @@ module "fargate-frontend" {
   ]
 
   task_stop_timeout = 90
-  cluster_name = module.ecs-cluster.name
 }
 
 #######
@@ -156,13 +157,14 @@ module "fargate-frontend" {
 #######
 
 module "fargate-backend" {
-  source = "./fargate-backend"
-  aws_region = var.aws-region
-  name_prefix        = "ecs-fargate-backend"
+  source = "./FargateCluster"
+  environment = var.environment
+  ecs_cluster_name = module.ecs-cluster.name
+  name        = "ecs-fargate-backend"
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
   cluster_id         = module.ecs-cluster.id
-  balancer_sg_id     = module.backend-alb.sg_id
+  source_security_group_id     = module.backend-alb.sg_id
 
   secrets_arns = [
     aws_secretsmanager_secret.dns-secrets.arn,
@@ -180,13 +182,12 @@ module "fargate-backend" {
       "name": "${var.environment}/${var.secret_db_name}"
     }
   ]
-
   ecr_repository_arn = module.backend-ecr.arn
   task_container_image   = "${module.backend-ecr.repository_url}:${var.backend_container_image}"
   task_definition_cpu    = 256
   task_definition_memory = 512
 
-  task_container_port             = var.backend_port
+  container_port             = var.backend_port
   task_container_assign_public_ip = false
 
   target_groups = [
@@ -230,7 +231,7 @@ module "rds-database" {
   environment = var.environment
   vpc_id = module.vpc.vpc_id
   db_user = var.db_user
-  security_group_allow_traffic = module.fargate-backend.service_sg_id
+  security_group_allow_traffic = module.fargate-backend.sg_id
   subnets = module.vpc.private_subnets
   rotation_days = 1
 }
@@ -248,7 +249,7 @@ module "elasticache" {
   environment = var.environment
   port = var.elasticache_port
   vpc_id = module.vpc.vpc_id
-  security_group_allow_traffic = module.fargate-backend.service_sg_id
+  security_group_allow_traffic = module.fargate-backend.sg_id
   subnets = module.vpc.elasticache_subnet_group_name
 }
 

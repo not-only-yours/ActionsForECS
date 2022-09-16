@@ -1,8 +1,5 @@
-#####
-# Cloudwatch
-#####
-resource "aws_cloudwatch_log_group" "main_backend" {
-  name = "${var.name_prefix}-cloudwatch"
+resource "aws_cloudwatch_log_group" "main" {
+  name = "${var.environment}-${var.name}-cloudwatch"
 
   retention_in_days = var.log_retention_in_days
   kms_key_id        = var.logs_kms_key
@@ -10,10 +7,8 @@ resource "aws_cloudwatch_log_group" "main_backend" {
   tags = var.tags
 }
 
-
-
 resource "aws_iam_role" "ec2_iam_role_backend" {
-  name = "${var.name_prefix}-ec2_iam_role"
+  name = "${var.environment}-${var.name}-ec2_iam_role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -33,84 +28,60 @@ resource "aws_iam_role" "ec2_iam_role_backend" {
 EOF
 }
 
-
-#####
-# IAM - Task execution role, needed to pull ECR images etc.
-#####
 resource "aws_iam_role" "assume-role_backend" {
-  name               = "${var.name_prefix}-assume-role"
-  assume_role_policy = data.aws_iam_policy_document.task_assume_backend.json
+  name               = "${var.environment}-${var.name}-assume-role"
+  assume_role_policy = data.aws_iam_policy_document.task_assume.json
 
   #tags = var.tags
 }
 
 
 resource "aws_iam_role" "execution_backend" {
-  name               = "${var.name_prefix}-task-execution-role"
-  assume_role_policy = data.aws_iam_policy_document.task_assume_backend.json
-  managed_policy_arns = [aws_iam_policy.task_secrets_manager_backend.arn, aws_iam_policy.task_execution_permissions_backend.arn,  aws_iam_policy.task_permissions_backend.arn, aws_iam_policy.task_rds_backend.arn]
+  name               = "${var.environment}-${var.name}-task-execution-role"
+  assume_role_policy = data.aws_iam_policy_document.task_assume.json
+  managed_policy_arns = var.rds_arn != "" ?[
+                      aws_iam_policy.task_secrets_manager.arn,
+                      aws_iam_policy.task_execution_permissions.arn,
+                      aws_iam_policy.task_permissions.arn,
+                      aws_iam_policy.task_rds.arn] : [
+                    aws_iam_policy.task_secrets_manager.arn,
+                    aws_iam_policy.task_execution_permissions.arn,
+                    aws_iam_policy.task_permissions.arn]
   #tags = var.tags
 }
 
+module "fargate-security-group" {
+  source = "../SecurityGroup"
 
+  vpc_id = var.vpc_id
+  name = var.name
+  environment = var.environment
 
-
-#####
-# IAM - Task role, basic. Append policies to this role for S3, DynamoDB etc.
-#####
-
-
-
-
-
-
-#####
-# Security groups
-#####
-resource "aws_security_group" "ecs_service_backend" {
-  vpc_id      = var.vpc_id
-  name_prefix = var.sg_name_prefix == "" ? "${var.name_prefix}-ecs-service-sg-" : "${var.sg_name_prefix}-"
-  description = "Fargate service security group"
-  tags = merge(
-  var.tags,
-  {
-    Name = var.sg_name_prefix == "" ? "${var.name_prefix}-ecs-service-sg" : var.sg_name_prefix
-  },
-  )
-  ingress {
-    description      = "TLS from VPC"
-    from_port        = var.task_container_port
-    to_port          = var.task_container_port
-    protocol         = "tcp"
-    security_groups = [var.balancer_sg_id]
+  inbound_security_groups = [{
+    description = "${var.environment}-${var.name} Fargate service security group inbound traffic on port ${var.container_port}",
+    from_port = var.container_port,
+    to_port = var.container_port,
+    security_group   = var.source_security_group_id
   }
-  revoke_rules_on_delete = true
+  ]
 
-  lifecycle {
-    create_before_destroy = true
-  }
+  egress_cidr_blocks = [
+    {
+      description = "${var.environment}-${var.name} Fargate service security group egress all"
+      from_port        = 0
+      to_port          = 0
+      cidr_blocks      = ["0.0.0.0/0"]
+    }]
 }
 
-resource "aws_security_group_rule" "egress_service_backend" {
-  security_group_id = aws_security_group.ecs_service_backend.id
-  type              = "egress"
-  protocol          = "-1"
-  from_port         = 0
-  to_port           = 0
-  cidr_blocks       = ["0.0.0.0/0"]
-  ipv6_cidr_blocks  = ["::/0"]
-}
 
-#####
-# Load Balancer Target group
-#####
-resource "aws_lb_target_group" "task_backend" {
+resource "aws_lb_target_group" "task" {
   for_each = var.load_balanced ? { for tg in var.target_groups : tg.target_group_name => tg } : {}
 
   name                 = lookup(each.value, "target_group_name")
   vpc_id               = var.vpc_id
   protocol             = var.task_container_protocol
-  port                 = lookup(each.value, "container_port", var.task_container_port)
+  port                 = lookup(each.value, "container_port", var.container_port)
   deregistration_delay = lookup(each.value, "deregistration_delay", null)
   target_type          = "ip"
 
@@ -142,34 +113,9 @@ resource "aws_lb_target_group" "task_backend" {
   )
 }
 
-#####
-# ECS Task/Service
-#####
-locals {
-  task_environment = [
-  for k, v in var.task_container_environment : {
-    name  = k
-    value = v
-  }
-  ]
 
-  target_group_portMaps = length(var.target_groups) > 0 ? distinct([
-  for tg in var.target_groups : {
-    containerPort = contains(keys(tg), "container_port") ? tg.container_port : var.task_container_port
-    protocol      = contains(keys(tg), "protocol") ? lower(tg.protocol) : "tcp"
-  }
-  ]) : []
-
-  task_environment_files = [
-  for file in var.task_container_environment_files : {
-    value = file
-    type  = "s3"
-  }
-  ]
-}
-
-resource "aws_ecs_task_definition" "task_backend" {
-  family                   = var.name_prefix
+resource "aws_ecs_task_definition" "task" {
+  family                   = var.name
   execution_role_arn       = aws_iam_role.execution_backend.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -186,7 +132,7 @@ resource "aws_ecs_task_definition" "task_backend" {
 
   container_definitions = <<EOF
 [{
-  "name": "${var.container_name != "" ? var.container_name : var.name_prefix}",
+  "name": "${var.container_name != "" ? var.container_name : var.name}",
   "image": "${var.task_container_image}",
   %{if var.repository_credentials != ""~}
   "repositoryCredentials": {
@@ -197,14 +143,14 @@ resource "aws_ecs_task_definition" "task_backend" {
   %{if length(local.target_group_portMaps) > 0}
   "portMappings": ${jsonencode(local.target_group_portMaps)},
   %{else}
-  %{if var.task_container_port != 0 || var.task_host_port != 0~}
+  %{if var.container_port != 0 || var.task_host_port != 0~}
   "portMappings": [
     {
       %{if var.task_host_port != 0~}
       "hostPort": ${var.task_host_port},
       %{~endif}
-      %{if var.task_container_port != 0~}
-      "containerPort": ${var.task_container_port},
+      %{if var.container_port != 0~}
+      "containerPort": ${var.container_port},
       %{~endif}
       "protocol":"tcp"
     }
@@ -214,7 +160,7 @@ resource "aws_ecs_task_definition" "task_backend" {
   "logConfiguration": {
     "logDriver": "awslogs",
     "options": {
-      "awslogs-group": "${aws_cloudwatch_log_group.main_backend.name}",
+      "awslogs-group": "${aws_cloudwatch_log_group.main.name}",
       "awslogs-region": "${data.aws_region.current.name}",
       "awslogs-stream-prefix": "container"
     }
@@ -326,16 +272,17 @@ EOF
   tags = merge(
   var.tags,
   {
-    Name = var.container_name != "" ? var.container_name : var.name_prefix
+    Name = var.container_name != "" ? var.container_name : var.name
   },
   )
 }
 
-resource "aws_ecs_service" "service_backend" {
-  name = var.name_prefix
+
+resource "aws_ecs_service" "service" {
+  name = var.name
 
   cluster         = var.cluster_id
-  task_definition = "${aws_ecs_task_definition.task_backend.family}:${max(aws_ecs_task_definition.task_backend.revision, data.aws_ecs_task_definition.task_backend.revision)}"
+  task_definition = "${aws_ecs_task_definition.task.family}:${max(aws_ecs_task_definition.task.revision, data.aws_ecs_task_definition.task.revision)}"
 
   desired_count  = var.desired_count
   propagate_tags = var.propagate_tags
@@ -353,7 +300,7 @@ resource "aws_ecs_service" "service_backend" {
 
   network_configuration {
     subnets          = var.private_subnet_ids
-    security_groups  = [aws_security_group.ecs_service_backend.id]
+    security_groups  = [module.fargate-security-group.id]
     assign_public_ip = var.task_container_assign_public_ip
   }
 
@@ -369,9 +316,9 @@ resource "aws_ecs_service" "service_backend" {
   dynamic "load_balancer" {
     for_each = var.load_balanced ? var.target_groups : []
     content {
-      container_name   = var.container_name != "" ? var.container_name : var.name_prefix
-      container_port   = lookup(load_balancer.value, "container_port", var.task_container_port)
-      target_group_arn = aws_lb_target_group.task_backend[lookup(load_balancer.value, "target_group_name")].arn
+      container_name   = var.container_name != "" ? var.container_name : var.name
+      container_port   = lookup(load_balancer.value, "container_port", var.container_port)
+      target_group_arn = aws_lb_target_group.task[lookup(load_balancer.value, "target_group_name")].arn
     }
   }
 
@@ -383,14 +330,68 @@ resource "aws_ecs_service" "service_backend" {
     for_each = var.service_registry_arn == "" ? [] : [1]
     content {
       registry_arn   = var.service_registry_arn
-      container_name = var.container_name != "" ? var.container_name : var.name_prefix
+      container_name = var.container_name != "" ? var.container_name : var.name
     }
   }
 
   tags = merge(
   var.tags,
   {
-    Name = "${var.name_prefix}-service"
+    Name = "${var.name}-service"
   },
   )
 }
+
+
+
+resource "aws_appautoscaling_target" "ecs-target" {
+  count = var.autoscaling_enabled ? 1 : 0
+
+  max_capacity       = 4
+  min_capacity       = 1
+  resource_id        = "service/${var.ecs_cluster_name}/${aws_ecs_service.service.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "cpu-utilization-high-frontend" {
+  count = var.autoscaling_enabled ? 1 : 0
+
+  alarm_name          = "${var.environment}-${var.name}-CPU-Utilization-High-${var.ecs_as_cpu_high_threshold_per}"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = var.ecs_as_cpu_high_threshold_per
+
+  dimensions = {
+    ClusterName = var.name
+    ServiceName = aws_ecs_service.service.name
+  }
+
+  alarm_actions = [aws_appautoscaling_policy.app-up[count.index].arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "cpu-utilization-low" {
+  count = var.autoscaling_enabled ? 1 : 0
+
+  alarm_name          = "${var.environment}-${var.name}-CPU-Utilization-Low-${var.ecs_as_cpu_low_threshold_per}"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = var.ecs_as_cpu_low_threshold_per
+
+  dimensions = {
+    ClusterName = var.name
+    ServiceName = aws_ecs_service.service.name
+  }
+
+  alarm_actions = [aws_appautoscaling_policy.app-down[count.index].arn]
+}
+
