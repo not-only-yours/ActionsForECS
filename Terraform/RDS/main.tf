@@ -1,6 +1,6 @@
 #that file creates rds and security group that allows connection from backend fargate cluster
 
-resource "aws_db_option_group" "database_option_group" {
+resource "aws_db_option_group" "database-option-group" {
   name                 = "${var.environment}-${var.name}-option-group"
   engine_name          = "mysql"
   major_engine_version = "5.7"
@@ -16,7 +16,7 @@ resource "aws_db_option_group" "database_option_group" {
   }
 }
 
-resource "aws_db_parameter_group" "database_parameter_group" {
+resource "aws_db_parameter_group" "database-parameter-group" {
   name   = "${var.environment}-${var.name}-parameter-group"
   family = "mysql5.7"
 
@@ -73,7 +73,7 @@ module "rds-sg" {
 
 
 
-resource "aws_db_subnet_group" "database_subnet_group" {
+resource "aws_db_subnet_group" "database-subnet-group" {
   name       = "${var.environment}-${var.name}-subnet-group"
   subnet_ids = var.subnets
 
@@ -88,16 +88,16 @@ resource "aws_db_instance" "default" {
   port                   = var.port
   name                   = var.name
   username               = var.db_user
-  password               = random_password.db_master_pass.result
+  password               = random_password.db-master-pass.result
   instance_class         = "db.t2.micro"
   allocated_storage      = 10
   skip_final_snapshot    = true
   license_model          = "general-public-license"
-  db_subnet_group_name   = aws_db_subnet_group.database_subnet_group.id
+  db_subnet_group_name   = aws_db_subnet_group.database-subnet-group.id
   vpc_security_group_ids = [module.rds-sg.id]
   publicly_accessible    = false
-  parameter_group_name   = aws_db_parameter_group.database_parameter_group.id
-  option_group_name      = aws_db_option_group.database_option_group.id
+  parameter_group_name   = aws_db_parameter_group.database-parameter-group.id
+  option_group_name      = aws_db_option_group.database-option-group.id
 }
 
 resource "random_id" "id" {
@@ -105,7 +105,7 @@ resource "random_id" "id" {
 }
 
 # initial password
-resource "random_password" "db_master_pass" {
+resource "random_password" "db-master-pass" {
   length           = 40
   special          = true
   min_special      = 5
@@ -124,14 +124,14 @@ resource "aws_secretsmanager_secret_version" "db-pass-val" {
     engine   = "mysql"
     host     = aws_db_instance.default.address
     username = var.db_user
-    password = random_password.db_master_pass.result
+    password = random_password.db-master-pass.result
     dbname   = var.name
     port     = aws_db_instance.default.port
   }
   )
 }
 
-resource "aws_secretsmanager_secret_rotation" "secrets_rotation" {
+resource "aws_secretsmanager_secret_rotation" "secrets-rotation" {
   secret_id = aws_secretsmanager_secret.rds-secrets.id
   rotation_lambda_arn = aws_lambda_function.rotate-code-mysql.arn
   rotation_rules {
@@ -146,7 +146,7 @@ data "aws_caller_identity" "current" {}
 data "aws_subnet" "firstsub" {  id = var.subnets[0] }
 
 resource "aws_iam_role" "lambda_rotation" {
-  name = "${var.name}-rotation_lambda"
+  name = "${var.environment}-${var.name}-rotation-lambda"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -165,7 +165,7 @@ EOF
 }
 
 resource "aws_iam_policy_attachment" "lambdabasic" {
-  name       = "${var.name}-lambdabasic"
+  name       = "${var.environment}-${var.name}-lambdabasic"
   roles      = [aws_iam_role.lambda_rotation.name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }

@@ -9,7 +9,7 @@ resource "aws_lb" "alb" {
 
 }
 
-resource "aws_lb_listener" "alb_80" {
+resource "aws_lb_listener" "alb-80" {
   count = var.is_internal ? 0 : 1
   load_balancer_arn = aws_lb.alb.arn
   port              = "80"
