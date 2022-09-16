@@ -23,12 +23,12 @@ resource "aws_iam_policy" "task_permissions" {
       {
         Effect = "Allow"
         Resource = [aws_cloudwatch_log_group.main.arn,
-          "${aws_cloudwatch_log_group.main.arn}:*"]
+        "${aws_cloudwatch_log_group.main.arn}:*"]
         Action = [
           "logs:CreateLogStream",
           "logs:PutLogEvents",
         ]
-      }]
+    }]
   })
 
 }
@@ -40,13 +40,13 @@ resource "aws_iam_policy" "task_secrets_manager" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
+        Effect   = "Allow"
         Resource = var.secrets_arns
         Action = [
           "secretsmanager:GetSecretValue",
           "kms:Decrypt"
         ]
-      }]
+    }]
   })
 }
 
@@ -66,7 +66,7 @@ resource "aws_iam_policy" "task_rds" {
         Action = [
           "rds-db:connect"
         ]
-      }]
+    }]
   })
 }
 
@@ -78,28 +78,28 @@ resource "aws_iam_policy" "task_execution_permissions" {
   name = "${var.environment}-${var.name}-task_execution_permissions"
 
   policy = jsonencode({
-    "Version":"2012-10-17",
-    "Statement":[
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Sid":"ListImagesInRepository",
-        "Effect":"Allow",
-        "Action":[
+        "Sid" : "ListImagesInRepository",
+        "Effect" : "Allow",
+        "Action" : [
           "ecr:ListImages"
         ],
-        "Resource":var.ecr_repository_arn
+        "Resource" : var.ecr_repository_arn
       },
       {
-        "Sid":"GetAuthorizationToken",
-        "Effect":"Allow",
-        "Action":[
+        "Sid" : "GetAuthorizationToken",
+        "Effect" : "Allow",
+        "Action" : [
           "ecr:GetAuthorizationToken"
         ],
-        "Resource":"*"
+        "Resource" : "*"
       },
       {
-        "Sid":"ManageRepositoryContents",
-        "Effect":"Allow",
-        "Action":[
+        "Sid" : "ManageRepositoryContents",
+        "Effect" : "Allow",
+        "Action" : [
           "ecr:BatchCheckLayerAvailability",
           "ecr:GetDownloadUrlForLayer",
           "ecr:GetRepositoryPolicy",
@@ -108,7 +108,7 @@ resource "aws_iam_policy" "task_execution_permissions" {
           "ecr:DescribeImages",
           "ecr:BatchGetImage"
         ],
-        "Resource":var.ecr_repository_arn
+        "Resource" : var.ecr_repository_arn
       }
     ]
   })

@@ -294,18 +294,18 @@ variable "service_registry_arn" {
 }
 
 variable "autoscaling_enabled" {
-  type = bool
+  type        = bool
   description = "enabling autoscaling"
-  default = false
+  default     = false
 }
 
 variable "ecs_as_cpu_low_threshold_per" {
   description = "Lower bound of autoscaling frontend group"
-  default = "10"
+  default     = "10"
 }
 
 variable "ecs_as_cpu_high_threshold_per" {
-  default = "90"
+  default     = "90"
   description = "Higher bound of autoscaling frontend group"
 }
 
@@ -339,5 +339,5 @@ variable "task_container_environment_files" {
 
 variable "ecs_cluster_name" {
   description = "name of ecs cluster"
-  type = string
+  type        = string
 }

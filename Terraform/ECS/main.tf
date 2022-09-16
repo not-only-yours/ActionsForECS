@@ -8,7 +8,7 @@ resource "aws_ecs_cluster" "cluster" {
 
   tags = {
     Environment = var.environment,
-    Terraform = true
+    Terraform   = true
   }
 }
 

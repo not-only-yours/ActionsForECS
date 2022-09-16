@@ -1,15 +1,15 @@
 variable "name" {
-  type = string
+  type        = string
   description = "name of ECR repository"
 }
 
 variable "environment" {
-  type = string
+  type        = string
   description = "environment"
 }
 
 variable "max_images_in_repo" {
-  type = number
+  type        = number
   description = "maximum number of images that stored in repository"
-  default = 0
+  default     = 0
 }

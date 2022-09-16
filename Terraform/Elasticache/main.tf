@@ -1,14 +1,14 @@
 # that file creates elasticache and security group for it
 
 module "redis-sg" {
-  source = "../SecurityGroup"
-  vpc_id = var.vpc_id
-  name = var.name
+  source      = "../SecurityGroup"
+  vpc_id      = var.vpc_id
+  name        = var.name
   environment = var.environment
   inbound_security_groups = [{
-    description = "${var.environment}-${var.name} inbound to redis ${var.port}",
-    from_port = var.port,
-    to_port = var.port,
+    description    = "${var.environment}-${var.name} inbound to redis ${var.port}",
+    from_port      = var.port,
+    to_port        = var.port,
     security_group = var.security_group_allow_traffic
   }]
 
@@ -28,7 +28,7 @@ resource "aws_elasticache_cluster" "enabled" {
 
   tags = {
     Environment = var.environment,
-    Terraform = true
+    Terraform   = true
   }
 }
 

@@ -8,7 +8,7 @@ resource "aws_cloudwatch_log_group" "main" {
 }
 
 resource "aws_iam_role" "ec2_iam_role_backend" {
-  name = "${var.environment}-${var.name}-ec2_iam_role"
+  name               = "${var.environment}-${var.name}-ec2_iam_role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -39,39 +39,39 @@ resource "aws_iam_role" "assume-role_backend" {
 resource "aws_iam_role" "execution_backend" {
   name               = "${var.environment}-${var.name}-task-execution-role"
   assume_role_policy = data.aws_iam_policy_document.task_assume.json
-  managed_policy_arns = var.rds_arn != "" ?[
-                      aws_iam_policy.task_secrets_manager.arn,
-                      aws_iam_policy.task_execution_permissions.arn,
-                      aws_iam_policy.task_permissions.arn,
-                      aws_iam_policy.task_rds.arn] : [
-                    aws_iam_policy.task_secrets_manager.arn,
-                    aws_iam_policy.task_execution_permissions.arn,
-                    aws_iam_policy.task_permissions.arn]
+  managed_policy_arns = var.rds_arn != "" ? [
+    aws_iam_policy.task_secrets_manager.arn,
+    aws_iam_policy.task_execution_permissions.arn,
+    aws_iam_policy.task_permissions.arn,
+    aws_iam_policy.task_rds.arn] : [
+    aws_iam_policy.task_secrets_manager.arn,
+    aws_iam_policy.task_execution_permissions.arn,
+  aws_iam_policy.task_permissions.arn]
   #tags = var.tags
 }
 
 module "fargate-security-group" {
   source = "../SecurityGroup"
 
-  vpc_id = var.vpc_id
-  name = var.name
+  vpc_id      = var.vpc_id
+  name        = var.name
   environment = var.environment
 
   inbound_security_groups = [{
-    description = "${var.environment}-${var.name} Fargate service security group inbound traffic on port ${var.container_port}",
-    from_port = var.container_port,
-    to_port = var.container_port,
-    security_group   = var.source_security_group_id
-  }
+    description    = "${var.environment}-${var.name} Fargate service security group inbound traffic on port ${var.container_port}",
+    from_port      = var.container_port,
+    to_port        = var.container_port,
+    security_group = var.source_security_group_id
+    }
   ]
 
   egress_cidr_blocks = [
     {
       description = "${var.environment}-${var.name} Fargate service security group egress all"
-      from_port        = 0
-      to_port          = 0
-      cidr_blocks      = ["0.0.0.0/0"]
-    }]
+      from_port   = 0
+      to_port     = 0
+      cidr_blocks = ["0.0.0.0/0"]
+  }]
 }
 
 
@@ -106,10 +106,10 @@ resource "aws_lb_target_group" "task" {
   }
 
   tags = merge(
-  var.tags,
-  {
-    Name = lookup(each.value, "target_group_name")
-  },
+    var.tags,
+    {
+      Name = lookup(each.value, "target_group_name")
+    },
   )
 }
 
@@ -270,10 +270,10 @@ EOF
   }
 
   tags = merge(
-  var.tags,
-  {
-    Name = var.container_name != "" ? var.container_name : var.name
-  },
+    var.tags,
+    {
+      Name = var.container_name != "" ? var.container_name : var.name
+    },
   )
 }
 
@@ -335,10 +335,10 @@ resource "aws_ecs_service" "service" {
   }
 
   tags = merge(
-  var.tags,
-  {
-    Name = "${var.name}-service"
-  },
+    var.tags,
+    {
+      Name = "${var.name}-service"
+    },
   )
 }
 

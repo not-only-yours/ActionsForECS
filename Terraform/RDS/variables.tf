@@ -1,41 +1,41 @@
 variable "name" {
   description = "name of database"
-  type = string
+  type        = string
 }
 
 variable "environment" {
   description = "environment name"
-  type = string
+  type        = string
 }
 
 variable "vpc_id" {
   description = "id of vpc"
-  type = string
+  type        = string
 }
 
 variable "port" {
   description = "database port"
-  default = 3306
-  type = number
+  default     = 3306
+  type        = number
 }
 
 variable "db_user" {
   description = "database user"
-  type = string
+  type        = string
 }
 
 variable "security_group_allow_traffic" {
   description = "security groups from witch inbound traffic allows"
-  type = string
+  type        = string
 }
 
 variable "subnets" {
   description = "subnets in which database creates"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "rotation_days" {
   description = "days before password rotation"
-  default = 7
-  type = number
+  default     = 7
+  type        = number
 }
