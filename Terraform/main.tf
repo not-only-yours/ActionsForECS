@@ -304,17 +304,3 @@ resource "aws_secretsmanager_secret_version" "sversion" {
    }
 EOF
 }
-
-
-#module "rds-sg" {
-#  source = "./SecurityGroup"
-#  vpc_id = module.vpc.vpc_id
-#  name = "rds"
-#  environment = "test"
-#  ingress_cidr_blocks = [{
-#    description = "inbound 80",
-#    from_port = 80,
-#    to_port = 80,
-#    cidr_blocks = ["0.0.0.0/0"]
-#  }]
-#}

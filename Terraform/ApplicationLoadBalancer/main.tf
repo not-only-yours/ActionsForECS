@@ -11,6 +11,7 @@ resource "aws_lb" "alb" {
 
 resource "aws_lb_listener" "alb-80" {
   count = var.is_internal ? 0 : 1
+
   load_balancer_arn = aws_lb.alb.arn
   port              = "80"
   protocol          = "HTTP"
@@ -31,6 +32,7 @@ resource "aws_lb_listener" "alb-80" {
 
 resource "aws_lb_listener" "backend-alb" {
   count = var.is_internal ? 1 : 0
+
   load_balancer_arn = aws_lb.alb.arn
   port              = var.internal_port
   protocol          = "HTTP"
@@ -43,6 +45,7 @@ resource "aws_lb_listener" "backend-alb" {
 
 resource "aws_lb_listener" "alb_443" {
   count = var.certificate_arn == "" ? 0 : 1
+
   load_balancer_arn = aws_lb.alb.arn
   port              = "443"
   protocol          = "HTTPS"

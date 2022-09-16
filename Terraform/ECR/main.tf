@@ -14,6 +14,7 @@ resource "aws_ecr_repository" "ecr" {
 
 resource "aws_ecr_lifecycle_policy" "ecr-policy" {
   count = var.max_images_in_repo == 0 ? 0 : 1
+
   repository = aws_ecr_repository.ecr.name
 
   policy = <<EOF

@@ -51,27 +51,6 @@ module "rds-sg" {
     ]
 }
 
-#resource "aws_security_group" "database_instance" {
-#  name   = "${var.environment}-${var.name}-security-group"
-#  vpc_id = var.vpc_id
-#
-#
-#  ingress {
-#
-#    from_port         = var.port
-#    to_port           = var.port
-#    protocol          = "tcp"
-#    security_groups   = concat(var.security_groups_allow_traffic, formatlist(aws_security_group.lambda.id))
-#
-#  }
-#
-#  tags = {
-#    Name = "${var.environment}-${var.name}-security-group"
-#  }
-#}
-
-
-
 
 resource "aws_db_subnet_group" "database-subnet-group" {
   name       = "${var.environment}-${var.name}-subnet-group"
