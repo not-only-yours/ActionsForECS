@@ -27,6 +27,7 @@ variable "certificate_arn" {
 variable "target_group_arn" {
   description = "arn of target group"
   type        = string
+  default     = null
 }
 
 variable "internal_port" {
@@ -51,4 +52,13 @@ variable "ingress_cidr" {
   description = "ingress cidr"
   type        = list(string)
   default     = []
+}
+
+variable "target_id" {
+  description = "id of target for creation target group that will be attached to alb"
+}
+
+variable "target-group-port" {
+  description = "target group port"
+  default     = null
 }

@@ -9,7 +9,3 @@ output "address" {
 output "port" {
   value = aws_db_instance.default.port
 }
-
-output "rds_secrets_arn" {
-  value = aws_secretsmanager_secret.rds-secrets.arn
-}
